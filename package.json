@@ -1,0 +1,32 @@
+{
+  "name": "new-portfolio-mern",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "npm run dev:server",
+    "dev:client": "npm run dev --workspace client --",
+    "dev:server": "npm run dev --workspace server",
+    "start": "npm run start --workspace server",
+    "build": "npm run build --workspace client",
+    "seed": "npm run seed --workspace server"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "mongoose": "^8.13.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.4.1",
+    "nodemon": "^3.1.10",
+    "vite": "^6.2.6"
+  }
+}

@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Keshav Kumar - PM Portfolio</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="/_sdk/element_sdk.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <style>
+    
+      .font-display {
+        font-family: "Playfair Display", serif;
+      }
+      .font-body {
+        font-family: "DM Sans", sans-serif;
+      }
+
+      .project-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .project-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+      }
+
+      .modal-backdrop {
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      .modal-content {
+        animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .nav-link {
+        position: relative;
+      }
+
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #f59e0b;
+        transition: width 0.3s ease;
+      }
+
+      .nav-link:hover::after {
+        width: 100%;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .tag {
+        transition: all 0.2s ease;
+      }
+
+      .tag:hover {
+        transform: scale(1.05);
+      }
+
+      .metric-card {
+        transition: all 0.3s ease;
+      }
+
+      .metric-card:hover {
+        transform: scale(1.02);
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      }
+
+      .wireframe-img {
+        transition: transform 0.3s ease;
+      }
+
+      .wireframe-img:hover {
+        transform: scale(1.02);
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #f59e0b;
+        border-radius: 10px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #d97706;
+      }
+    </style>
+    <style>
+      body {
+        box-sizing: border-box;
+      }
+    </style>
+    <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  </head>
+  <body class="h-full bg-white text-gray-800">
+    <div id="app" class="h-full overflow-auto">
+      <!-- Header -->
+      <header
+        class="sticky top-0 bg-white/95 backdrop-blur-sm z-40 border-b border-gray-100"
+      >       
+          <nav
+            class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between"
+          >
+            <a
+              href="index.html"
+              class="font-display text-xl font-semibold"
+              id="nav-logo"
+              >KK</a
+            >
+            <div class="hidden md:flex items-center gap-8">
+              <a
+                href="index.html"
+                class="nav-link text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                >Home</a
+              >
+              <a
+                href="#about"
+                class="nav-link text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                >About</a
+              >
+              <a
+                href="#projects"
+                class="nav-link text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                >My Work</a
+              >
+              <a
+                href="index.html#contact"
+                class="nav-link text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                >Contact</a
+              >
+            </div>
+            <button
+              id="mobile-menu-btn"
+              class="md:hidden p-2 text-gray-600 hover:text-gray-900"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewbox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+          </nav>
+        <!--</div>-->
+      </header>
+      <!-- Hero Section -->
+      <section class="max-w-6xl mx-auto px-6 pt-16 pb-12">
+        <div class="text-center max-w-2xl mx-auto">
+          <span
+            class="inline-block px-4 py-1.5 bg-amber-50 text-amber-600 rounded-full text-sm font-medium mb-4"
+          >
+            ✨ Featured Work
+          </span>
+          <h1
+            id="page-title"
+            class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight"
+          >
+            My Projects
+          </h1>
+          <p id="page-subtitle" class="text-lg text-gray-500 leading-relaxed">
+            A collection of work showcasing problem-solving through design and
+            development
+          </p>
+        </div>
+      </section> 
+      <!-- Projects Grid -->
+      <section class="max-w-6xl mx-auto px-6 pb-20">
+        <div
+          id="projects-grid"
+          class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          <!-- Cards will be rendered by JS -->
+        </div>
+      </section>
+      <!-- Project Modal -->
+      <div id="modal" class="fixed inset-0 z-50 hidden">
+        <div
+          class="modal-backdrop absolute inset-0 bg-black/60 backdrop-blur-sm"
+          onclick="closeModal()"
+        ></div>
+        <div
+          class="absolute inset-0 md:inset-4 lg:inset-8 flex items-center justify-center pointer-events-none"
+        >
+          <div
+            class="modal-content bg-white rounded-2xl shadow-2xl w-full h-full md:max-w-4xl md:h-auto md:max-h-[90vh] overflow-hidden pointer-events-auto flex flex-col"
+          >
+            <div id="modal-content" class="w-full h-full overflow-auto">
+              <!-- Modal content rendered by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <script>
+      // Project data
+      const projects = [
+        {
+          id: 1,
+          title: "E-Commerce Redesign",
+          description: "Complete UX overhaul for a fashion retail platform",
+          image: "🛍️",
+          tags: ["UX Design", "E-Commerce"],
+          color: "from-rose-400 to-pink-500",
+          problem:
+            "The existing e-commerce platform suffered from a 68% cart abandonment rate and poor mobile conversion. Users reported difficulty finding products and a confusing checkout process that led to frustration. Mobile users had to navigate through 5 steps to complete a purchase.",
+          solution:
+            "Implemented a streamlined navigation system with AI-powered smart filters, redesigned the checkout flow reducing steps from 5 to 3, and created a mobile-first responsive design with gesture-based interactions. Added one-click payment options and saved preferences for faster future purchases.",
+          wireframes: [
+            {
+              name: "Product Discovery",
+              description: "Smart search & filters",
+            },
+            { name: "Shopping Cart", description: "Quick add/remove items" },
+            { name: "Checkout Flow", description: "3-step payment process" },
+          ],
+          impact: [
+            { metric: "32%", label: "Increase in Conversions" },
+            { metric: "45%", label: "Reduced Cart Abandonment" },
+            { metric: "2.5x", label: "Mobile Revenue Growth" },
+            { metric: "4.8★", label: "App Store Rating" },
+          ],
+        },
+        {
+          id: 2,
+          title: "FinTech Dashboard",
+          description: "Real-time analytics dashboard for investment tracking",
+          image: "📊",
+          tags: ["Dashboard", "Data Viz"],
+          color: "from-blue-400 to-indigo-500",
+          problem:
+            "Financial analysts were spending 3+ hours daily aggregating data from multiple sources. The lack of real-time insights led to delayed decision-making and missed investment opportunities. Data was scattered across different platforms making analysis tedious.",
+          solution:
+            "Built a unified dashboard with real-time data synchronization, customizable widgets, and AI-powered alerts. Implemented dark mode for extended use and collaborative features for team analysis. Added automated reporting and data export capabilities.",
+          wireframes: [
+            {
+              name: "Dashboard Overview",
+              description: "Real-time market data",
+            },
+            { name: "Analytics View", description: "Custom charts & graphs" },
+            { name: "Reports & Exports", description: "Automated reporting" },
+          ],
+          impact: [
+            { metric: "85%", label: "Time Saved Daily" },
+            { metric: "12K", label: "Active Users" },
+            { metric: "99.9%", label: "Uptime Achieved" },
+            { metric: "$2M", label: "Revenue Generated" },
+          ],
+        },
+        {
+          id: 3,
+          title: "Healthcare App",
+          description: "Patient-doctor communication platform",
+          image: "🏥",
+          tags: ["Mobile", "Healthcare"],
+          color: "from-emerald-400 to-teal-500",
+          problem:
+            "Patients faced long wait times for appointments and had no easy way to communicate with doctors between visits. Medical records were scattered across different systems, causing delays in care. Privacy and data security were major concerns for users.",
+          solution:
+            "Created a unified health app with telemedicine capabilities, secure messaging, appointment scheduling, and integrated health records. Added medication reminders, symptom tracking features, and HIPAA-compliant data encryption for maximum security.",
+          wireframes: [
+            { name: "Home Dashboard", description: "Quick appointment access" },
+            { name: "Chat Interface", description: "Secure messaging" },
+            { name: "Health Records", description: "Complete medical history" },
+          ],
+          impact: [
+            { metric: "60%", label: "Reduced Wait Times" },
+            { metric: "50K", label: "Consultations/Month" },
+            { metric: "92%", label: "Patient Satisfaction" },
+            { metric: "40%", label: "Cost Reduction" },
+          ],
+        },
+        {
+          id: 4,
+          title: "Learning Platform",
+          description: "Interactive education system for online courses",
+          image: "📚",
+          tags: ["EdTech", "Web App"],
+          color: "from-violet-400 to-purple-500",
+          problem:
+            "Online learners experienced low completion rates (under 15%) due to lack of engagement and motivation. The existing platform offered no personalization or progress tracking capabilities. Students struggled to stay motivated without peer interaction.",
+          solution:
+            "Designed a gamified learning experience with progress tracking, achievements, and social learning features. Implemented adaptive learning paths that adjust to individual student performance. Added peer review, discussion forums, and instructor feedback systems.",
+          wireframes: [
+            { name: "Student Dashboard", description: "Course progress" },
+            { name: "Course Content", description: "Interactive lessons" },
+            { name: "Progress & Badges", description: "Gamification rewards" },
+          ],
+          impact: [
+            { metric: "78%", label: "Completion Rate" },
+            { metric: "200K", label: "Students Enrolled" },
+            { metric: "4.9★", label: "Course Ratings" },
+            { metric: "156%", label: "Engagement Increase" },
+          ],
+        },
+        {
+          id: 5,
+          title: "Travel Booking",
+          description: "End-to-end travel planning and booking experience",
+          image: "✈️",
+          tags: ["Travel", "Booking"],
+          color: "from-amber-400 to-orange-500",
+          problem:
+            "Travelers were overwhelmed by the complexity of planning trips across multiple platforms. The fragmented experience led to booking errors and missed opportunities for better deals. Users had to switch between 5+ different apps to plan a single trip.",
+          solution:
+            "Built an all-in-one travel companion that handles flights, hotels, and activities in one seamless flow. Added AI-powered recommendations based on preferences and budget optimization tools. Integrated price monitoring and flexible booking options.",
+          wireframes: [
+            { name: "Search Interface", description: "Multi-city search" },
+            { name: "Itinerary Builder", description: "Trip planning" },
+            {
+              name: "Booking Confirmation",
+              description: "Payment & confirmation",
+            },
+          ],
+          impact: [
+            { metric: "40%", label: "Booking Time Reduced" },
+            { metric: "89%", label: "User Retention" },
+            { metric: "$15M", label: "Bookings Processed" },
+            { metric: "28%", label: "Average Savings" },
+          ],
+        },
+        {
+          id: 6,
+          title: "Smart Home Hub",
+          description: "Unified IoT device management interface",
+          image: "🏠",
+          tags: ["IoT", "Smart Home"],
+          color: "from-cyan-400 to-sky-500",
+          problem:
+            "Smart home users struggled with managing devices across 5+ different apps. Automation setup was complex and devices from different manufacturers couldn't communicate effectively. Users felt overwhelmed by the number of apps needed.",
+          solution:
+            "Created a unified control center that connects all smart devices regardless of manufacturer. Implemented voice control, one-tap scenes, and intuitive automation builder with visual programming. Added energy monitoring and predictive automation.",
+          wireframes: [
+            { name: "Device Control", description: "Real-time status" },
+            { name: "Automation Setup", description: "Visual programming" },
+            { name: "Energy Monitoring", description: "Usage analytics" },
+          ],
+          impact: [
+            { metric: "100+", label: "Devices Supported" },
+            { metric: "35%", label: "Energy Savings" },
+            { metric: "75K", label: "Homes Connected" },
+            { metric: "98%", label: "Setup Success Rate" },
+          ],
+        },
+      ];
+
+      const defaultConfig = {
+        page_title: "My Projects",
+        page_subtitle:
+          "A collection of work showcasing problem-solving through design and development",
+        primary_color: "#f59e0b",
+        background_color: "#ffffff",
+        text_color: "#1f2937",
+        secondary_surface_color: "#f9fafb",
+        secondary_action_color: "#6b7280",
+      };
+
+      // Render project cards
+      function renderProjects() {
+        const grid = document.getElementById("projects-grid");
+        grid.innerHTML = projects
+          .map(
+            (project) => `
+        <article class="project-card bg-white rounded-2xl border border-gray-100 overflow-hidden cursor-pointer shadow-sm hover:shadow-xl" onclick="openModal(${project.id})">
+          <div class="aspect-video bg-gradient-to-br ${project.color} flex items-center justify-center relative overflow-hidden">
+            <span class="text-6xl filter drop-shadow-lg">${project.image}</span>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+          </div>
+          <div class="p-5">
+            <div class="flex gap-2 mb-3 flex-wrap">
+              ${project.tags
+                .map(
+                  (tag) => `
+                <span class="tag px-3 py-1 bg-amber-50 text-amber-600 text-xs font-medium rounded-full">${tag}</span>
+              `,
+                )
+                .join("")}
+            </div>
+            <h3 class="font-bold text-lg text-gray-900 mb-2">${project.title}</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">${project.description}</p>
+            <div class="mt-4 flex items-center text-amber-500 text-sm font-medium group">
+              <span>View Details</span>
+              <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </div>
+          </div>
+        </article>
+      `,
+          )
+          .join("");
+      }
+
+      // Open modal with project details
+      function openModal(projectId) {
+        const project = projects.find((p) => p.id === projectId);
+        if (!project) return;
+
+        const modalContent = document.getElementById("modal-content");
+        modalContent.innerHTML = `
+        <div class="relative">
+          <!-- Header Image -->
+          <div class="h-48 md:h-64 bg-gradient-to-br ${project.color} flex items-center justify-center relative">
+            <span class="text-8xl filter drop-shadow-lg">${project.image}</span>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Content -->
+          <div class="p-6 md:p-8">
+            <!-- Title & Tags -->
+            <div class="mb-8">
+              <div class="flex gap-2 mb-3 flex-wrap">
+                ${project.tags
+                  .map(
+                    (tag) => `
+                  <span class="px-3 py-1 bg-amber-50 text-amber-600 text-xs font-medium rounded-full">${tag}</span>
+                `,
+                  )
+                  .join("")}
+              </div>
+              <h2 class="text-2xl md:text-3xl font-bold text-gray-900">${project.title}</h2>
+              <p class="text-gray-500 mt-2">${project.description}</p>
+            </div>
+
+            <!-- Problem Statement -->
+            <section class="mb-8">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
+                  <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                  </svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900">Problem Statement</h3>
+              </div>
+              <div class="bg-red-50 rounded-xl p-5 border border-red-100">
+                <p class="text-gray-700 leading-relaxed">${project.problem}</p>
+              </div>
+            </section>
+
+            <!-- Solution -->
+            <section class="mb-8">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                  <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                  </svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900">Solution</h3>
+              </div>
+              <div class="bg-green-50 rounded-xl p-5 border border-green-100">
+                <p class="text-gray-700 leading-relaxed">${project.solution}</p>
+              </div>
+            </section>
+
+            <!-- Wireframes & Design -->
+            <section class="mb-8">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                  <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+                  </svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900">Wireframes & Design</h3>
+              </div>
+              <div class="grid grid-cols-3 gap-4">
+                ${project.wireframes
+                  .map(
+                    (frame, index) => `
+                  <div class="wireframe-img bg-gray-100 rounded-xl p-4 aspect-square flex flex-col items-center justify-center border-2 border-dashed border-gray-200 hover:border-amber-300 transition-colors cursor-pointer">
+                    <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center mb-2">
+                      <span class="text-amber-600 font-bold">${index + 1}</span>
+                    </div>
+                    <span class="text-sm font-bold text-gray-700 text-center mb-1">${frame.name}</span>
+                    <span class="text-xs text-gray-500 text-center">${frame.description}</span>
+                  </div>
+                `,
+                  )
+                  .join("")}
+              </div>
+            </section>
+
+            <!-- Impact -->
+            <section>
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                  <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                  </svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900">Impact & Results</h3>
+              </div>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                ${project.impact
+                  .map(
+                    (item) => `
+                  <div class="metric-card bg-amber-50 rounded-xl p-4 text-center border border-amber-100">
+                    <div class="text-2xl md:text-3xl font-bold text-amber-600 mb-1">${item.metric}</div>
+                    <div class="text-xs text-gray-600 font-medium">${item.label}</div>
+                  </div>
+                `,
+                  )
+                  .join("")}
+              </div>
+            </section>
+          </div>
+        </div>
+      `;
+
+        document.getElementById("modal").classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+      }
+
+      // Close modal
+      function closeModal() {
+        document.getElementById("modal").classList.add("hidden");
+        document.body.style.overflow = "";
+      }
+
+      // Close modal on escape key
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+      });
+
+      // Element SDK
+      async function onConfigChange(config) {
+        document.getElementById("page-title").textContent =
+          config.page_title || defaultConfig.page_title;
+        document.getElementById("page-subtitle").textContent =
+          config.page_subtitle || defaultConfig.page_subtitle;
+      }
+
+      function mapToCapabilities(config) {
+        return {
+          recolorables: [],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined,
+        };
+      }
+
+      function mapToEditPanelValues(config) {
+        return new Map([
+          ["page_title", config.page_title || defaultConfig.page_title],
+          [
+            "page_subtitle",
+            config.page_subtitle || defaultConfig.page_subtitle,
+          ],
+        ]);
+      }
+
+      // Initialize
+      renderProjects();
+
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange,
+          mapToCapabilities,
+          mapToEditPanelValues,
+        });
+      }
+    </script>
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'9d373b542404197f',t:'MTc3MjAyMjgxMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>

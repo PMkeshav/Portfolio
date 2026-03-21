@@ -1,0 +1,20 @@
+{
+  "name": "portfolio-server",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "nodemon --legacy-watch src/index.js",
+    "start": "node src/index.js",
+    "seed": "node src/data/seed.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "mongoose": "^8.13.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
