@@ -313,4 +313,3 @@ export const seedProjects = [
     displayOrder: 5,
   },
 ];
-

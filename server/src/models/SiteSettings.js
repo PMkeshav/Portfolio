@@ -47,4 +47,3 @@ const siteSettingsSchema = new mongoose.Schema(
 );
 
 export const SiteSettings = mongoose.model("SiteSettings", siteSettingsSchema);
-

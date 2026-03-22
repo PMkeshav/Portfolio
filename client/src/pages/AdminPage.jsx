@@ -12,14 +12,24 @@ export default function AdminPage() {
   const [siteSettings, setSiteSettings] = useState(null);
   const [homePage, setHomePage] = useState(null);
   const [projects, setProjects] = useState([]);
+  const [adminKey, setAdminKey] = useState("");
+  const [keyInput, setKeyInput] = useState("");
   const [selectedProjectId, setSelectedProjectId] = useState("new");
   const [projectForm, setProjectForm] = useState(createEmptyProject());
-  const [status, setStatus] = useState("loading");
+  const [status, setStatus] = useState("locked");
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
-    refresh();
+    const savedKey = window.localStorage.getItem("portfolioAdminKey") || "";
+
+    if (!savedKey) {
+      return;
+    }
+
+    setAdminKey(savedKey);
+    setKeyInput(savedKey);
+    refresh(savedKey);
   }, []);
 
   const selectedProject = useMemo(
@@ -35,24 +45,31 @@ export default function AdminPage() {
     }
   }, [projects, selectedProject, selectedProjectId]);
 
-  async function refresh() {
+  async function refresh(accessKey = adminKey) {
+    if (!accessKey) {
+      setStatus("locked");
+      return;
+    }
+
     setStatus("loading");
     setError("");
 
     try {
-      const [settingsData, homeData, projectData] = await Promise.all([
-        contentApi.getSiteSettings(),
-        contentApi.getHomePage(),
-        contentApi.getProjects(),
-      ]);
+      const { siteSettings: settingsData, homePage: homeData, projects: projectData } =
+        await contentApi.getAdminBootstrap(accessKey);
 
       setSiteSettings(settingsData);
       setHomePage(homeData);
       setProjects(projectData);
+      setAdminKey(accessKey);
+      setKeyInput(accessKey);
+      window.localStorage.setItem("portfolioAdminKey", accessKey);
       setStatus("ready");
     } catch (requestError) {
+      setAdminKey("");
+      window.localStorage.removeItem("portfolioAdminKey");
       setError(requestError.message);
-      setStatus("error");
+      setStatus("locked");
     }
   }
 
@@ -60,7 +77,7 @@ export default function AdminPage() {
     try {
       setNotice("");
       setError("");
-      const updated = await contentApi.updateSiteSettings(siteSettings);
+      const updated = await contentApi.updateSiteSettings(siteSettings, adminKey);
       setSiteSettings(updated);
       setNotice("Site settings saved.");
     } catch (requestError) {
@@ -72,7 +89,7 @@ export default function AdminPage() {
     try {
       setNotice("");
       setError("");
-      const updated = await contentApi.updateHomePage(homePage);
+      const updated = await contentApi.updateHomePage(homePage, adminKey);
       setHomePage(updated);
       setNotice("Home page content saved.");
     } catch (requestError) {
@@ -86,14 +103,18 @@ export default function AdminPage() {
       setError("");
 
       if (projectForm._id) {
-        await contentApi.updateProject(projectForm._id, sanitizeProject(projectForm));
+        await contentApi.updateProject(
+          projectForm._id,
+          sanitizeProject(projectForm),
+          adminKey,
+        );
         setNotice("Project updated.");
       } else {
-        await contentApi.createProject(sanitizeProject(projectForm));
+        await contentApi.createProject(sanitizeProject(projectForm), adminKey);
         setNotice("Project created.");
       }
 
-      await refresh();
+      await refresh(adminKey);
     } catch (requestError) {
       setError(requestError.message);
     }
@@ -104,21 +125,60 @@ export default function AdminPage() {
 
     try {
       setError("");
-      await contentApi.deleteProject(projectForm._id);
+      await contentApi.deleteProject(projectForm._id, adminKey);
       setSelectedProjectId("new");
       setNotice("Project deleted.");
-      await refresh();
+      await refresh(adminKey);
     } catch (requestError) {
       setError(requestError.message);
     }
+  }
+
+  async function unlockAdmin(event) {
+    event.preventDefault();
+    setNotice("");
+    await refresh(keyInput.trim());
+  }
+
+  function lockAdmin() {
+    setAdminKey("");
+    setKeyInput("");
+    setSiteSettings(null);
+    setHomePage(null);
+    setProjects([]);
+    setSelectedProjectId("new");
+    setProjectForm(createEmptyProject());
+    setNotice("");
+    setError("");
+    setStatus("locked");
+    window.localStorage.removeItem("portfolioAdminKey");
   }
 
   if (status === "loading") {
     return <div className="admin-shell">Loading admin content...</div>;
   }
 
-  if (status === "error") {
-    return <div className="admin-shell admin-error">{error}</div>;
+  if (status === "locked") {
+    return (
+      <div className="admin-shell">
+        <section className="admin-card">
+          <h1>Portfolio Admin Access</h1>
+          <p>Enter the portfolio access key to open the site settings and CMS.</p>
+          <form className="field-grid" onSubmit={unlockAdmin}>
+            <Field
+              label="Access Key"
+              type="password"
+              value={keyInput}
+              onChange={setKeyInput}
+            />
+            <button className="button button-primary" type="submit">
+              Unlock Admin
+            </button>
+          </form>
+          {error ? <div className="admin-shell admin-error">{error}</div> : null}
+        </section>
+      </div>
+    );
   }
 
   return (
@@ -129,9 +189,14 @@ export default function AdminPage() {
           <h1>Portfolio Admin</h1>
           <p>Edit Mongo-backed content that drives the frontend UI.</p>
         </div>
-        <a className="button button-secondary" href="/">
-          View Site
-        </a>
+        <div className="admin-actions">
+          <a className="button button-secondary" href="/">
+            View Site
+          </a>
+          <button className="button button-secondary" type="button" onClick={lockAdmin}>
+            Save and Logout
+          </button>
+        </div>
       </header>
 
       {notice ? <div className="admin-notice">{notice}</div> : null}

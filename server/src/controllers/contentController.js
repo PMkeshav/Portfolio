@@ -1,6 +1,7 @@
 import {
   createProject,
   deleteProject,
+  getAdminBootstrap,
   getHomePage,
   getProjectBySlug,
   getProjects,
@@ -13,6 +14,11 @@ import { asyncHandler } from "../utils/http.js";
 
 export const fetchSiteSettings = asyncHandler(async (_req, res) => {
   const data = await getSiteSettings();
+  res.json(data);
+});
+
+export const fetchAdminBootstrap = asyncHandler(async (_req, res) => {
+  const data = await getAdminBootstrap();
   res.json(data);
 });
 
@@ -61,4 +67,3 @@ export const removeProject = asyncHandler(async (req, res) => {
   const data = await deleteProject(req.params.id);
   res.json(data);
 });
-

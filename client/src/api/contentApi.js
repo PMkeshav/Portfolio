@@ -1,5 +1,28 @@
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:4000/api";
+function resolveApiBaseUrl() {
+  const rawValue = import.meta.env.VITE_API_BASE_URL?.trim();
+
+  if (!rawValue) {
+    return import.meta.env.DEV ? "/api" : "http://127.0.0.1:4000/api";
+  }
+
+  const withProtocol = /^https?:\/\//i.test(rawValue)
+    ? rawValue
+    : `https://${rawValue}`;
+
+  try {
+    const url = new URL(withProtocol);
+
+    if (!url.pathname || url.pathname === "/") {
+      url.pathname = "/api";
+    }
+
+    return url.toString().replace(/\/$/, "");
+  } catch {
+    return import.meta.env.DEV ? "/api" : "http://127.0.0.1:4000/api";
+  }
+}
+
+const API_BASE_URL = resolveApiBaseUrl();
 
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
@@ -19,34 +42,60 @@ async function request(path, options = {}) {
   return data;
 }
 
+function withAdminHeaders(adminKey, options = {}) {
+  return {
+    ...options,
+    headers: {
+      ...(options.headers || {}),
+      "x-portfolio-key": adminKey,
+    },
+  };
+}
+
 export const contentApi = {
   getSiteSettings: () => request("/site-settings"),
-  updateSiteSettings: (payload) =>
-    request("/admin/site-settings", {
-      method: "PUT",
-      body: JSON.stringify(payload),
-    }),
+  getAdminBootstrap: (adminKey) =>
+    request("/admin/bootstrap", withAdminHeaders(adminKey)),
+  updateSiteSettings: (payload, adminKey) =>
+    request(
+      "/admin/site-settings",
+      withAdminHeaders(adminKey, {
+        method: "PUT",
+        body: JSON.stringify(payload),
+      }),
+    ),
   getHomePage: () => request("/pages/home"),
-  updateHomePage: (payload) =>
-    request("/admin/pages/home", {
-      method: "PUT",
-      body: JSON.stringify(payload),
-    }),
+  updateHomePage: (payload, adminKey) =>
+    request(
+      "/admin/pages/home",
+      withAdminHeaders(adminKey, {
+        method: "PUT",
+        body: JSON.stringify(payload),
+      }),
+    ),
   getProjects: () => request("/projects"),
   getProject: (slug) => request(`/projects/${slug}`),
-  createProject: (payload) =>
-    request("/admin/projects", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
-  updateProject: (id, payload) =>
-    request(`/admin/projects/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(payload),
-    }),
-  deleteProject: (id) =>
-    request(`/admin/projects/${id}`, {
-      method: "DELETE",
-    }),
+  createProject: (payload, adminKey) =>
+    request(
+      "/admin/projects",
+      withAdminHeaders(adminKey, {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }),
+    ),
+  updateProject: (id, payload, adminKey) =>
+    request(
+      `/admin/projects/${id}`,
+      withAdminHeaders(adminKey, {
+        method: "PUT",
+        body: JSON.stringify(payload),
+      }),
+    ),
+  deleteProject: (id, adminKey) =>
+    request(
+      `/admin/projects/${id}`,
+      withAdminHeaders(adminKey, {
+        method: "DELETE",
+      }),
+    ),
 };
-

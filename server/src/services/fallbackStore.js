@@ -16,7 +16,10 @@ export function getFallbackSiteSettings() {
 }
 
 export function updateFallbackSiteSettings(payload) {
-  siteSettings = { ...structuredClone(payload), key: "default" };
+  siteSettings = {
+    ...structuredClone(payload),
+    key: "default",
+  };
   return getFallbackSiteSettings();
 }
 

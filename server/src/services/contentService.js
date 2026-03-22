@@ -45,6 +45,20 @@ export async function updateSiteSettings(payload) {
   ).lean();
 }
 
+export async function getAdminBootstrap() {
+  const [siteSettings, homePage, projects] = await Promise.all([
+    getSiteSettings(),
+    getHomePage(),
+    getProjects(),
+  ]);
+
+  return {
+    siteSettings,
+    homePage,
+    projects,
+  };
+}
+
 export async function getHomePage() {
   if (!isDbConnected()) {
     return getFallbackHomePage();

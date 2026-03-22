@@ -9,6 +9,15 @@ function createApp() {
   app.use(cors());
   app.use(express.json({ limit: "1mb" }));
 
+  app.get("/", (_req, res) => {
+    res.json({
+      ok: true,
+      message: "Portfolio API is running",
+      health: "/health",
+      api: "/api",
+    });
+  });
+
   app.get("/health", (_req, res) => {
     res.json({ ok: true });
   });

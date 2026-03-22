@@ -294,7 +294,7 @@ h2 {
 
 .portrait-stack {
   position: relative;
-  width: min(100%, 420px);
+  width: min(100%, 300px);
   margin-inline: auto;
   padding: 16px;
 }

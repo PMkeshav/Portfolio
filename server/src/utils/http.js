@@ -5,6 +5,12 @@ export function badRequest(message, errors = []) {
   return error;
 }
 
+export function forbidden(message = "Forbidden") {
+  const error = new Error(message);
+  error.status = 403;
+  return error;
+}
+
 export function asyncHandler(handler) {
   return async (req, res, next) => {
     try {
