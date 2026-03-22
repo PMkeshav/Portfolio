@@ -103,15 +103,16 @@ img {
 }
 
 .site-frame main {
-  min-height: calc(100vh - 96px);
+  min-height: calc(100vh - 140px);
 }
 
 .hero-section {
   min-height: auto;
   padding: 48px 0 24px;
   justify-content: space-between;
-  gap: 36px;
-  margin: -16px 0 0 32px;
+  gap: 100px;
+  margin: -17px 0px 0px 120px;
+  padding-left: 20px;
 }
 
 .hero-copy,
@@ -130,7 +131,7 @@ img {
 
 .hero-media {
   flex: 0.85;
-  gap: 12px;
+  gap: 20px;
   align-items: center;
 }
 
@@ -166,7 +167,7 @@ img {
   gap: 8px;
   padding: 8px 16px;
   background: rgba(245, 158, 11, 0.08);
-  margin-bottom: 18px;
+  margin-bottom: 24px;
   color: #92400e;
   font-weight: 500;
 }
@@ -203,7 +204,7 @@ h3 {
 h1 {
   font-size: clamp(3rem, 7vw, 5.5rem);
   line-height: 1.05;
-  margin-bottom: 18px;
+  margin-bottom: 24px;
 }
 
 h2 {
@@ -221,7 +222,7 @@ h2 {
   color: var(--color-primary);
   font-size: clamp(1.25rem, 2vw, 1.5rem);
   font-weight: 500;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
 .hero-bio,
@@ -244,7 +245,7 @@ h2 {
 .hero-bio {
   max-width: 640px;
   font-size: 1.125rem;
-  margin-bottom: 22px;
+  margin-bottom: 32px;
 }
 
 .button {
@@ -295,7 +296,7 @@ h2 {
   position: relative;
   width: min(100%, 420px);
   margin-inline: auto;
-  padding: 10px 12px 6px;
+  padding: 16px;
 }
 
 .portrait-frame {
@@ -627,7 +628,7 @@ h2 {
   display: inline-flex;
   gap: 10px;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 21px;
 }
 
 .button-danger {
@@ -656,8 +657,8 @@ h2 {
 
   .hero-section {
     min-height: auto;
-    padding: 88px 0 20px;
-    gap: 20px;
+    padding: 88px 0 32px;
+    gap: 28px;
   }
 
   .admin-grid,
@@ -667,8 +668,8 @@ h2 {
 
   .portrait-stack {
     margin-inline: auto;
-    width: min(100%, 360px);
-    padding: 8px 8px 4px;
+    width: min(100%, 280px);
+    padding: 12px;
   }
 
   .portrait-frame {
