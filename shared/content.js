@@ -159,6 +159,9 @@ export function validateProject(payload) {
       `wireframes[${index}].description`,
       "Wireframe description",
     );
+    if (!isValidUrl(item?.figmaUrl)) {
+      errors.push(`Wireframe Figma URL is invalid at wireframes[${index}].figmaUrl`);
+    }
   });
 
   if (
@@ -184,4 +187,3 @@ export function validateProject(payload) {
 
   return errors;
 }
-

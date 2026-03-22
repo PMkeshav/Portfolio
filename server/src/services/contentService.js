@@ -28,6 +28,33 @@ async function hasDatabaseAccess() {
   return connectDb();
 }
 
+function sortProjectsQuery(query) {
+  return query.sort({ featured: -1, displayOrder: 1, createdAt: 1 });
+}
+
+async function getAdminProjects() {
+  if (!(await hasDatabaseAccess())) {
+    return getFallbackProjects();
+  }
+
+  return sortProjectsQuery(Project.find({})).lean();
+}
+
+async function ensureFeaturedLimit(payload, projectId = null) {
+  if (!payload?.featured || payload?.isActive === false) {
+    return;
+  }
+
+  const projects = await getAdminProjects();
+  const featuredCount = projects.filter(
+    (project) => project.featured && project._id?.toString() !== projectId,
+  ).length;
+
+  if (featuredCount >= 4) {
+    throw badRequest("Only 4 projects can be featured at a time");
+  }
+}
+
 export async function getSiteSettings() {
   if (!(await hasDatabaseAccess())) {
     return getFallbackSiteSettings();
@@ -57,7 +84,7 @@ export async function getAdminBootstrap() {
   const [siteSettings, homePage, projects] = await Promise.all([
     getSiteSettings(),
     getHomePage(),
-    getProjects(),
+    getAdminProjects(),
   ]);
 
   return {
@@ -94,42 +121,55 @@ export async function updateHomePage(payload) {
 
 export async function getProjects() {
   if (!(await hasDatabaseAccess())) {
-    return getFallbackProjects();
+    return getFallbackProjects().filter((project) => project.isActive !== false);
   }
 
-  return Project.find({}).sort({ displayOrder: 1, createdAt: 1 }).lean();
+  return sortProjectsQuery(Project.find({ isActive: { $ne: false } })).lean();
 }
 
 export async function getProjectBySlug(slug) {
   if (!(await hasDatabaseAccess())) {
-    return getFallbackProjectBySlug(slug);
+    const project = getFallbackProjectBySlug(slug);
+    return project?.isActive === false ? null : project;
   }
 
-  return Project.findOne({ slug }).lean();
+  return Project.findOne({ slug, isActive: { $ne: false } }).lean();
 }
 
 export async function createProject(payload) {
-  const errors = validateProject(payload);
+  const normalizedPayload = {
+    ...payload,
+    featured: payload?.isActive === false ? false : payload?.featured,
+  };
+  const errors = validateProject(normalizedPayload);
   if (errors.length) {
     throw badRequest("Invalid project payload", errors);
   }
 
+  await ensureFeaturedLimit(normalizedPayload);
+
   if (!(await hasDatabaseAccess())) {
-    return createFallbackProject(payload);
+    return createFallbackProject(normalizedPayload);
   }
 
-  const project = await Project.create(payload);
+  const project = await Project.create(normalizedPayload);
   return project.toObject();
 }
 
 export async function updateProject(id, payload) {
-  const errors = validateProject(payload);
+  const normalizedPayload = {
+    ...payload,
+    featured: payload?.isActive === false ? false : payload?.featured,
+  };
+  const errors = validateProject(normalizedPayload);
   if (errors.length) {
     throw badRequest("Invalid project payload", errors);
   }
 
+  await ensureFeaturedLimit(normalizedPayload, id);
+
   if (!(await hasDatabaseAccess())) {
-    const project = updateFallbackProject(id, payload);
+    const project = updateFallbackProject(id, normalizedPayload);
 
     if (!project) {
       const error = new Error("Project not found");
@@ -140,7 +180,7 @@ export async function updateProject(id, payload) {
     return project;
   }
 
-  const project = await Project.findByIdAndUpdate(id, payload, {
+  const project = await Project.findByIdAndUpdate(id, normalizedPayload, {
     new: true,
     runValidators: true,
   });

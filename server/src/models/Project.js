@@ -4,6 +4,7 @@ const wireframeSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     description: { type: String, required: true },
+    figmaUrl: { type: String, default: "" },
   },
   { _id: false },
 );
@@ -36,10 +37,10 @@ const projectSchema = new mongoose.Schema(
     wireframes: [wireframeSchema],
     impactMetrics: [impactMetricSchema],
     featured: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true },
     displayOrder: { type: Number, default: 0 },
   },
   { timestamps: true },
 );
 
 export const Project = mongoose.model("Project", projectSchema);
-

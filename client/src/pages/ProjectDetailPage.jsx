@@ -64,6 +64,16 @@ export default function ProjectDetailPage() {
               <div className="wireframe-index">{index + 1}</div>
               <h3>{item.name}</h3>
               <p>{item.description}</p>
+              {item.figmaUrl ? (
+                <a
+                  className="button button-secondary button-compact"
+                  href={item.figmaUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Open Figma
+                </a>
+              ) : null}
             </article>
           ))}
         </div>

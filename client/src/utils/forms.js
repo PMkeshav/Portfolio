@@ -41,6 +41,6 @@ export const createEmptyProject = (order = 99) => ({
   wireframes: [],
   impactMetrics: [],
   featured: false,
+  isActive: true,
   displayOrder: order,
 });
-

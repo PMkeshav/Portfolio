@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { contentApi } from "../api/contentApi.js";
 import ErrorState from "../components/ErrorState.jsx";
@@ -5,8 +6,11 @@ import LoadingState from "../components/LoadingState.jsx";
 import ProjectCard from "../components/ProjectCard.jsx";
 import { useLiveLoader } from "../hooks/useLiveLoader.js";
 
+const PROJECTS_PER_PAGE = 4;
+
 export default function HomePage() {
   const { siteSettings } = useOutletContext();
+  const [projectPage, setProjectPage] = useState(0);
   const { data, status, error } = useLiveLoader(
     async () => {
       const [homePage, projects] = await Promise.all([
@@ -18,20 +22,27 @@ export default function HomePage() {
     },
     { intervalMs: 4000 },
   );
+  const homePage = data?.homePage;
+  const projects = data?.projects || [];
+
+  const orderedProjects = useMemo(() => {
+    const featuredProjects = projects.filter((project) => project.featured);
+    const additionalProjects = projects.filter((project) => !project.featured);
+    return [...featuredProjects, ...additionalProjects];
+  }, [projects]);
+  const projectPageCount = Math.max(1, Math.ceil(orderedProjects.length / PROJECTS_PER_PAGE));
+  const visibleProjects = orderedProjects.slice(
+    projectPage * PROJECTS_PER_PAGE,
+    projectPage * PROJECTS_PER_PAGE + PROJECTS_PER_PAGE,
+  );
+
+  useEffect(() => {
+    setProjectPage((currentPage) => Math.min(currentPage, projectPageCount - 1));
+  }, [projectPageCount]);
 
   if (status === "loading") return <LoadingState label="Loading portfolio..." />;
   if (status === "error") return <ErrorState message={error} />;
-
-  const { homePage, projects } = data;
-
-  const preferredSlugs = homePage.featuredProjects.projectSlugs || [];
-  const preferredProjects = preferredSlugs
-    .map((slug) => projects.find((project) => project.slug === slug))
-    .filter(Boolean);
-  const additionalProjects = projects.filter(
-    (project) => !preferredSlugs.includes(project.slug),
-  );
-  const visibleProjects = [...preferredProjects, ...additionalProjects];
+  if (!homePage) return <ErrorState message="Home page data is unavailable." />;
 
   return (
     <div>
@@ -70,16 +81,12 @@ export default function HomePage() {
             </div>
             <div className="portrait-badge portrait-badge-bottom">✨</div>
           </div>
-          {homePage.hero.videoUrl ? (
-            <div className="video-frame">
-              <iframe
-                src={homePage.hero.videoUrl}
-                title="Portfolio introduction video"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+          <div className="video-frame video-placeholder">
+            <div className="video-placeholder-copy">
+              <span className="eyebrow">YouTube Video</span>
+              <strong>Video in progress, coming soon</strong>
             </div>
-          ) : null}
+          </div>
         </div>
       </section>
 
@@ -110,6 +117,32 @@ export default function HomePage() {
           <span className="eyebrow">{homePage.featuredProjects.eyebrow}</span>
           <h2>{homePage.featuredProjects.title}</h2>
           <p>{homePage.featuredProjects.description}</p>
+        </div>
+        <div className="carousel-toolbar">
+          <span className="carousel-caption">
+            Showing {Math.min(visibleProjects.length, PROJECTS_PER_PAGE)} of {orderedProjects.length}
+            {" "}projects
+          </span>
+          <div className="carousel-actions">
+            <button
+              className="button button-secondary button-compact"
+              type="button"
+              onClick={() => setProjectPage((page) => Math.max(page - 1, 0))}
+              disabled={projectPage === 0}
+            >
+              Previous
+            </button>
+            <button
+              className="button button-secondary button-compact"
+              type="button"
+              onClick={() =>
+                setProjectPage((page) => Math.min(page + 1, projectPageCount - 1))
+              }
+              disabled={projectPage >= projectPageCount - 1}
+            >
+              Next
+            </button>
+          </div>
         </div>
         <div className="project-grid">
           {visibleProjects.map((project) => (

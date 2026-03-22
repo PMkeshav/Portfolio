@@ -36,6 +36,10 @@ export default function AdminPage() {
     () => projects.find((item) => item._id === selectedProjectId) || null,
     [projects, selectedProjectId],
   );
+  const featuredProjectCount = useMemo(
+    () => projects.filter((item) => item.featured).length,
+    [projects],
+  );
 
   useEffect(() => {
     if (selectedProject) {
@@ -152,6 +156,15 @@ export default function AdminPage() {
     setError("");
     setStatus("locked");
     window.localStorage.removeItem("portfolioAdminKey");
+  }
+
+  function handleFeaturedToggle(checked) {
+    if (checked && !projectForm.featured && featuredProjectCount >= 4) {
+      window.alert("You cannot mark more than 4 projects as featured.");
+      return;
+    }
+
+    setProjectForm({ ...projectForm, featured: checked });
   }
 
   if (status === "loading") {
@@ -297,11 +310,6 @@ export default function AdminPage() {
             <Field label="Featured Eyebrow" value={homePage.featuredProjects.eyebrow} onChange={(value) => updateSiteField(setHomePage, homePage, ["featuredProjects", "eyebrow"], value)} />
             <Field label="Featured Title" value={homePage.featuredProjects.title} onChange={(value) => updateSiteField(setHomePage, homePage, ["featuredProjects", "title"], value)} />
             <TextAreaField label="Featured Description" value={homePage.featuredProjects.description} onChange={(value) => updateSiteField(setHomePage, homePage, ["featuredProjects", "description"], value)} />
-            <TextAreaField
-              label="Featured Project Slugs"
-              value={arrayToNewlineList(homePage.featuredProjects.projectSlugs)}
-              onChange={(value) => updateSiteField(setHomePage, homePage, ["featuredProjects", "projectSlugs"], newlineListToArray(value))}
-            />
             <Field label="Process Eyebrow" value={homePage.process.eyebrow} onChange={(value) => updateSiteField(setHomePage, homePage, ["process", "eyebrow"], value)} />
             <Field label="Process Title" value={homePage.process.title} onChange={(value) => updateSiteField(setHomePage, homePage, ["process", "title"], value)} />
             <TextAreaField label="Process Description" value={homePage.process.description} onChange={(value) => updateSiteField(setHomePage, homePage, ["process", "description"], value)} />
@@ -348,29 +356,199 @@ export default function AdminPage() {
           <Field label="Summary" value={projectForm.summary} onChange={(value) => setProjectForm({ ...projectForm, summary: value })} />
           <TextAreaField label="Description" value={projectForm.description} onChange={(value) => setProjectForm({ ...projectForm, description: value })} />
           <Field label="Category" value={projectForm.category} onChange={(value) => setProjectForm({ ...projectForm, category: value })} />
-          <Field label="Status Label" value={projectForm.statusLabel} onChange={(value) => setProjectForm({ ...projectForm, statusLabel: value })} />
-          <Field label="Display Order" type="number" value={projectForm.displayOrder} onChange={(value) => setProjectForm({ ...projectForm, displayOrder: Number(value || 0) })} />
-          <Field label="Emoji" value={projectForm.heroMedia.emoji} onChange={(value) => setProjectForm({ ...projectForm, heroMedia: { ...projectForm.heroMedia, emoji: value } })} />
-          <Field label="Gradient From" value={projectForm.heroMedia.gradientFrom} onChange={(value) => setProjectForm({ ...projectForm, heroMedia: { ...projectForm.heroMedia, gradientFrom: value } })} />
-          <Field label="Gradient To" value={projectForm.heroMedia.gradientTo} onChange={(value) => setProjectForm({ ...projectForm, heroMedia: { ...projectForm.heroMedia, gradientTo: value } })} />
+            <Field label="Status Label" value={projectForm.statusLabel} onChange={(value) => setProjectForm({ ...projectForm, statusLabel: value })} />
+            <Field label="Display Order" type="number" value={projectForm.displayOrder} onChange={(value) => setProjectForm({ ...projectForm, displayOrder: Number(value || 0) })} />
+            <Field label="Emoji" value={projectForm.heroMedia.emoji} onChange={(value) => setProjectForm({ ...projectForm, heroMedia: { ...projectForm.heroMedia, emoji: value } })} />
+            <Field label="Gradient From" value={projectForm.heroMedia.gradientFrom} onChange={(value) => setProjectForm({ ...projectForm, heroMedia: { ...projectForm.heroMedia, gradientFrom: value } })} />
+            <Field label="Gradient To" value={projectForm.heroMedia.gradientTo} onChange={(value) => setProjectForm({ ...projectForm, heroMedia: { ...projectForm.heroMedia, gradientTo: value } })} />
           <Field label="Image URL" value={projectForm.heroMedia.imageUrl} onChange={(value) => setProjectForm({ ...projectForm, heroMedia: { ...projectForm.heroMedia, imageUrl: value } })} />
           <TextAreaField label="Problem" value={projectForm.problem} onChange={(value) => setProjectForm({ ...projectForm, problem: value })} />
           <TextAreaField label="Solution" value={projectForm.solution} onChange={(value) => setProjectForm({ ...projectForm, solution: value })} />
           <TextAreaField label="Tags" value={arrayToNewlineList(projectForm.tags)} onChange={(value) => setProjectForm({ ...projectForm, tags: newlineListToArray(value) })} />
-          <TextAreaField label="Wireframes (name | description)" value={objectListToMultiline(projectForm.wireframes, ["name", "description"])} onChange={(value) => setProjectForm({ ...projectForm, wireframes: multilineToObjectList(value, ["name", "description"]) })} />
-          <TextAreaField label="Impact Metrics (metric | label)" value={objectListToMultiline(projectForm.impactMetrics, ["metric", "label"])} onChange={(value) => setProjectForm({ ...projectForm, impactMetrics: multilineToObjectList(value, ["metric", "label"]) })} />
         </div>
 
         <label className="checkbox-row">
           <input
             type="checkbox"
             checked={Boolean(projectForm.featured)}
-            onChange={(event) =>
-              setProjectForm({ ...projectForm, featured: event.target.checked })
-            }
+            onChange={(event) => handleFeaturedToggle(event.target.checked)}
           />
           Featured project
         </label>
+
+        <label className="checkbox-row">
+          <input
+            type="checkbox"
+            checked={Boolean(projectForm.isActive)}
+            onChange={(event) =>
+              setProjectForm({
+                ...projectForm,
+                isActive: event.target.checked,
+                featured: event.target.checked ? projectForm.featured : false,
+              })
+            }
+          />
+          Active project
+        </label>
+
+        <section className="admin-subsection">
+          <div className="admin-inline-header">
+            <h3>Wireframes & Design</h3>
+            <button
+              className="button button-secondary button-compact"
+              type="button"
+              onClick={() =>
+                setProjectForm({
+                  ...projectForm,
+                  wireframes: [
+                    ...projectForm.wireframes,
+                    { name: "", description: "", figmaUrl: "" },
+                  ],
+                })
+              }
+            >
+              Add Wireframe
+            </button>
+          </div>
+          <div className="admin-stack">
+            {projectForm.wireframes.map((item, index) => (
+              <div className="admin-list-card" key={`wireframe-${index}`}>
+                <div className="admin-inline-header">
+                  <strong>Wireframe {index + 1}</strong>
+                  <button
+                    className="button button-secondary button-compact"
+                    type="button"
+                    onClick={() =>
+                      setProjectForm({
+                        ...projectForm,
+                        wireframes: projectForm.wireframes.filter(
+                          (_entry, entryIndex) => entryIndex !== index,
+                        ),
+                      })
+                    }
+                  >
+                    Remove
+                  </button>
+                </div>
+                <div className="field-grid">
+                  <Field
+                    label="Name"
+                    value={item.name}
+                    onChange={(value) =>
+                      updateProjectListItem(
+                        setProjectForm,
+                        projectForm,
+                        "wireframes",
+                        index,
+                        "name",
+                        value,
+                      )
+                    }
+                  />
+                  <Field
+                    label="Figma Link"
+                    value={item.figmaUrl}
+                    onChange={(value) =>
+                      updateProjectListItem(
+                        setProjectForm,
+                        projectForm,
+                        "wireframes",
+                        index,
+                        "figmaUrl",
+                        value,
+                      )
+                    }
+                  />
+                  <TextAreaField
+                    label="Description"
+                    value={item.description}
+                    onChange={(value) =>
+                      updateProjectListItem(
+                        setProjectForm,
+                        projectForm,
+                        "wireframes",
+                        index,
+                        "description",
+                        value,
+                      )
+                    }
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="admin-subsection">
+          <div className="admin-inline-header">
+            <h3>Impact Metrics</h3>
+            <button
+              className="button button-secondary button-compact"
+              type="button"
+              onClick={() =>
+                setProjectForm({
+                  ...projectForm,
+                  impactMetrics: [...projectForm.impactMetrics, { metric: "", label: "" }],
+                })
+              }
+            >
+              Add Impact Metric
+            </button>
+          </div>
+          <div className="admin-stack">
+            {projectForm.impactMetrics.map((item, index) => (
+              <div className="admin-list-card" key={`impact-${index}`}>
+                <div className="admin-inline-header">
+                  <strong>Impact Metric {index + 1}</strong>
+                  <button
+                    className="button button-secondary button-compact"
+                    type="button"
+                    onClick={() =>
+                      setProjectForm({
+                        ...projectForm,
+                        impactMetrics: projectForm.impactMetrics.filter(
+                          (_entry, entryIndex) => entryIndex !== index,
+                        ),
+                      })
+                    }
+                  >
+                    Remove
+                  </button>
+                </div>
+                <div className="field-grid">
+                  <Field
+                    label="Metric"
+                    value={item.metric}
+                    onChange={(value) =>
+                      updateProjectListItem(
+                        setProjectForm,
+                        projectForm,
+                        "impactMetrics",
+                        index,
+                        "metric",
+                        value,
+                      )
+                    }
+                  />
+                  <Field
+                    label="Label"
+                    value={item.label}
+                    onChange={(value) =>
+                      updateProjectListItem(
+                        setProjectForm,
+                        projectForm,
+                        "impactMetrics",
+                        index,
+                        "label",
+                        value,
+                      )
+                    }
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
 
         <div className="admin-actions">
           <button className="button button-primary" onClick={saveProject}>
@@ -385,6 +563,15 @@ export default function AdminPage() {
       </section>
     </div>
   );
+}
+
+function updateProjectListItem(setter, state, listKey, index, field, value) {
+  setter({
+    ...state,
+    [listKey]: state[listKey].map((item, itemIndex) =>
+      itemIndex === index ? { ...item, [field]: value } : item,
+    ),
+  });
 }
 
 function Field({ label, value, onChange, type = "text" }) {
@@ -433,9 +620,17 @@ function sanitizeProject(project) {
     heroMedia: project.heroMedia,
     problem: project.problem,
     solution: project.solution,
-    wireframes: project.wireframes,
-    impactMetrics: project.impactMetrics,
-    featured: project.featured,
+    wireframes: project.wireframes.map((item) => ({
+      name: item.name?.trim() || "",
+      description: item.description?.trim() || "",
+      figmaUrl: item.figmaUrl?.trim() || "",
+    })),
+    impactMetrics: project.impactMetrics.map((item) => ({
+      metric: item.metric?.trim() || "",
+      label: item.label?.trim() || "",
+    })),
+    featured: project.isActive ? project.featured : false,
+    isActive: project.isActive,
     displayOrder: project.displayOrder,
   };
 }
