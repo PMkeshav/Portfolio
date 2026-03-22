@@ -1,8 +1,6 @@
-import { createApp } from "./app.js";
+import app from "./app.js";
 import { connectDb } from "./config/db.js";
 import { env } from "./config/env.js";
-
-const app = createApp();
 
 connectDb()
   .then((connected) => {

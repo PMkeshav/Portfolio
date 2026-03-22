@@ -3,7 +3,7 @@ import express from "express";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 import contentRoutes from "./routes/contentRoutes.js";
 
-export function createApp() {
+function createApp() {
   const app = express();
 
   app.use(cors());
@@ -19,3 +19,8 @@ export function createApp() {
 
   return app;
 }
+
+const app = createApp();
+
+export { createApp };
+export default app;
