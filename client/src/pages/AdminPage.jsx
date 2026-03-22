@@ -171,9 +171,14 @@ export default function AdminPage() {
               value={keyInput}
               onChange={setKeyInput}
             />
-            <button className="button button-primary" type="submit">
-              Unlock Admin
-            </button>
+            <div className="admin-login-actions field-full">
+              <button className="button button-primary button-compact" type="submit">
+                Login Admin
+              </button>
+              <a className="button button-secondary button-compact" href="/">
+                Go To Home
+              </a>
+            </div>
           </form>
           {error ? <div className="admin-shell admin-error">{error}</div> : null}
         </section>
