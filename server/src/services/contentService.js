@@ -3,7 +3,7 @@ import {
   validateProject,
   validateSiteSettings,
 } from "../../../shared/content.js";
-import { isDbConnected } from "../config/db.js";
+import { connectDb, isDbConnected } from "../config/db.js";
 import { HomePage } from "../models/HomePage.js";
 import { Project } from "../models/Project.js";
 import { SiteSettings } from "../models/SiteSettings.js";
@@ -20,8 +20,16 @@ import {
 } from "./fallbackStore.js";
 import { badRequest } from "../utils/http.js";
 
+async function hasDatabaseAccess() {
+  if (isDbConnected()) {
+    return true;
+  }
+
+  return connectDb();
+}
+
 export async function getSiteSettings() {
-  if (!isDbConnected()) {
+  if (!(await hasDatabaseAccess())) {
     return getFallbackSiteSettings();
   }
 
@@ -34,7 +42,7 @@ export async function updateSiteSettings(payload) {
     throw badRequest("Invalid site settings payload", errors);
   }
 
-  if (!isDbConnected()) {
+  if (!(await hasDatabaseAccess())) {
     return updateFallbackSiteSettings(payload);
   }
 
@@ -60,7 +68,7 @@ export async function getAdminBootstrap() {
 }
 
 export async function getHomePage() {
-  if (!isDbConnected()) {
+  if (!(await hasDatabaseAccess())) {
     return getFallbackHomePage();
   }
 
@@ -73,7 +81,7 @@ export async function updateHomePage(payload) {
     throw badRequest("Invalid home page payload", errors);
   }
 
-  if (!isDbConnected()) {
+  if (!(await hasDatabaseAccess())) {
     return updateFallbackHomePage(payload);
   }
 
@@ -85,7 +93,7 @@ export async function updateHomePage(payload) {
 }
 
 export async function getProjects() {
-  if (!isDbConnected()) {
+  if (!(await hasDatabaseAccess())) {
     return getFallbackProjects();
   }
 
@@ -93,7 +101,7 @@ export async function getProjects() {
 }
 
 export async function getProjectBySlug(slug) {
-  if (!isDbConnected()) {
+  if (!(await hasDatabaseAccess())) {
     return getFallbackProjectBySlug(slug);
   }
 
@@ -106,7 +114,7 @@ export async function createProject(payload) {
     throw badRequest("Invalid project payload", errors);
   }
 
-  if (!isDbConnected()) {
+  if (!(await hasDatabaseAccess())) {
     return createFallbackProject(payload);
   }
 
@@ -120,7 +128,7 @@ export async function updateProject(id, payload) {
     throw badRequest("Invalid project payload", errors);
   }
 
-  if (!isDbConnected()) {
+  if (!(await hasDatabaseAccess())) {
     const project = updateFallbackProject(id, payload);
 
     if (!project) {
@@ -147,7 +155,7 @@ export async function updateProject(id, payload) {
 }
 
 export async function deleteProject(id) {
-  if (!isDbConnected()) {
+  if (!(await hasDatabaseAccess())) {
     const project = deleteFallbackProject(id);
 
     if (!project) {

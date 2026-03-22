@@ -2,20 +2,35 @@ import mongoose from "mongoose";
 import { env } from "./env.js";
 
 let dbConnected = false;
+let connectionPromise = null;
 
 export async function connectDb() {
   mongoose.set("strictQuery", true);
 
-  try {
-    await mongoose.connect(env.mongodbUri);
+  if (mongoose.connection.readyState === 1) {
     dbConnected = true;
     return true;
-  } catch (error) {
-    dbConnected = false;
-    return false;
   }
+
+  if (connectionPromise) {
+    return connectionPromise;
+  }
+
+  connectionPromise = mongoose
+    .connect(env.mongodbUri)
+    .then(() => {
+      dbConnected = true;
+      return true;
+    })
+    .catch(() => {
+      dbConnected = false;
+      connectionPromise = null;
+      return false;
+    });
+
+  return connectionPromise;
 }
 
 export function isDbConnected() {
-  return dbConnected;
+  return dbConnected || mongoose.connection.readyState === 1;
 }
