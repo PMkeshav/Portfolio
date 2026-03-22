@@ -194,7 +194,7 @@ export default function AdminPage() {
             View Site
           </a>
           <button className="button button-secondary" type="button" onClick={lockAdmin}>
-            Save and Logout
+            Logout
           </button>
         </div>
       </header>
