@@ -7,5 +7,5 @@ export const env = {
   port: Number(process.env.PORT || 4000),
   mongodbUri:
     process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/portfolio_cms",
-  clientOrigin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
+  adminAccessKey: process.env.ADMIN_ACCESS_KEY || "change-me",
 };
