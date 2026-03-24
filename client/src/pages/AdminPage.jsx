@@ -14,6 +14,7 @@ export default function AdminPage() {
   const [projects, setProjects] = useState([]);
   const [adminKey, setAdminKey] = useState("");
   const [keyInput, setKeyInput] = useState("");
+  const [skillsGroupsText, setSkillsGroupsText] = useState("");
   const [selectedProjectId, setSelectedProjectId] = useState("new");
   const [projectForm, setProjectForm] = useState(createEmptyProject());
   const [status, setStatus] = useState("locked");
@@ -48,6 +49,19 @@ export default function AdminPage() {
       setProjectForm(createEmptyProject(projects.length + 1));
     }
   }, [projects, selectedProject, selectedProjectId]);
+
+  useEffect(() => {
+    if (!homePage?.skills?.groups) {
+      setSkillsGroupsText("");
+      return;
+    }
+
+    setSkillsGroupsText(
+      homePage.skills.groups
+        .map((group) => `${group.title} | ${group.items.join(", ")} | ${group.displayOrder}`)
+        .join("\n"),
+    );
+  }, [homePage]);
 
   async function refresh(accessKey = adminKey) {
     if (!accessKey) {
@@ -282,8 +296,9 @@ export default function AdminPage() {
             <Field label="Skills Title" value={homePage.skills.title} onChange={(value) => updateSiteField(setHomePage, homePage, ["skills", "title"], value)} />
             <TextAreaField
               label="Skills Groups (title | item1,item2,item3 | order)"
-              value={homePage.skills.groups.map((group) => `${group.title} | ${group.items.join(", ")} | ${group.displayOrder}`).join("\n")}
-              onChange={(value) =>
+              value={skillsGroupsText}
+              onChange={(value) => {
+                setSkillsGroupsText(value);
                 setHomePage({
                   ...homePage,
                   skills: {
@@ -304,8 +319,8 @@ export default function AdminPage() {
                         };
                       }),
                   },
-                })
-              }
+                });
+              }}
             />
             <Field label="Featured Eyebrow" value={homePage.featuredProjects.eyebrow} onChange={(value) => updateSiteField(setHomePage, homePage, ["featuredProjects", "eyebrow"], value)} />
             <Field label="Featured Title" value={homePage.featuredProjects.title} onChange={(value) => updateSiteField(setHomePage, homePage, ["featuredProjects", "title"], value)} />

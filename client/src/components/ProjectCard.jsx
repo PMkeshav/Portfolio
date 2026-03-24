@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import IconGlyph, { getProjectIconKey } from "./IconGlyph.jsx";
 
 export default function ProjectCard({ project }) {
   return (
@@ -12,7 +13,7 @@ export default function ProjectCard({ project }) {
         {project.heroMedia.imageUrl ? (
           <img src={project.heroMedia.imageUrl} alt={project.title} className="project-card-image" />
         ) : (
-          <span>{project.heroMedia.emoji || "✨"}</span>
+          <IconGlyph icon={getProjectIconKey(project)} className="project-card-icon" />
         )}
       </div>
       <div className="project-card-body">

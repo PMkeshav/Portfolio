@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { contentApi } from "../api/contentApi.js";
 import ErrorState from "../components/ErrorState.jsx";
+import IconGlyph, { getProjectIconKey } from "../components/IconGlyph.jsx";
 import LoadingState from "../components/LoadingState.jsx";
 import { useLiveLoader } from "../hooks/useLiveLoader.js";
 
@@ -28,7 +29,7 @@ export default function ProjectDetailPage() {
         {project.heroMedia.imageUrl ? (
           <img src={project.heroMedia.imageUrl} alt={project.title} className="project-hero-image" />
         ) : (
-          <span>{project.heroMedia.emoji || "✨"}</span>
+          <IconGlyph icon={getProjectIconKey(project)} className="project-hero-icon" />
         )}
       </div>
       <div className="project-detail-header">

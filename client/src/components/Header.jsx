@@ -17,9 +17,9 @@ export default function Header({ siteSettings }) {
 
             if (isHashLink) {
               return (
-                <a key={item.label} href={item.href} className="nav-link">
+                <Link key={item.label} to={item.href} className="nav-link">
                   {item.label}
-                </a>
+                </Link>
               );
             }
 
@@ -34,4 +34,3 @@ export default function Header({ siteSettings }) {
     </header>
   );
 }
-

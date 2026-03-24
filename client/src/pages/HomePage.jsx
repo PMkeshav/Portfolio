@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { contentApi } from "../api/contentApi.js";
 import ErrorState from "../components/ErrorState.jsx";
+import IconGlyph, { getHighlightIconKey } from "../components/IconGlyph.jsx";
 import LoadingState from "../components/LoadingState.jsx";
 import ProjectCard from "../components/ProjectCard.jsx";
+import RevealSection from "../components/RevealSection.jsx";
 import { useLiveLoader } from "../hooks/useLiveLoader.js";
 
 const PROJECTS_PER_PAGE = 4;
@@ -11,6 +13,7 @@ const PROJECTS_PER_PAGE = 4;
 export default function HomePage() {
   const { siteSettings } = useOutletContext();
   const [projectPage, setProjectPage] = useState(0);
+  const [typedName, setTypedName] = useState("");
   const { data, status, error } = useLiveLoader(
     async () => {
       const [homePage, projects] = await Promise.all([
@@ -40,24 +43,63 @@ export default function HomePage() {
     setProjectPage((currentPage) => Math.min(currentPage, projectPageCount - 1));
   }, [projectPageCount]);
 
+  useEffect(() => {
+    if (!homePage?.hero?.name) {
+      setTypedName("");
+      return;
+    }
+
+    const fullName = homePage.hero.name;
+    let frameId = 0;
+    let timeoutId = 0;
+    let index = 0;
+
+    const typeNext = () => {
+      setTypedName(fullName.slice(0, index + 1));
+      index += 1;
+
+      if (index < fullName.length) {
+        timeoutId = window.setTimeout(() => {
+          frameId = window.requestAnimationFrame(typeNext);
+        }, 70);
+      }
+    };
+
+    setTypedName("");
+    timeoutId = window.setTimeout(() => {
+      frameId = window.requestAnimationFrame(typeNext);
+    }, 220);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      window.cancelAnimationFrame(frameId);
+    };
+  }, [homePage?.hero?.name]);
+
   if (status === "loading") return <LoadingState label="Loading portfolio..." />;
   if (status === "error") return <ErrorState message={error} />;
   if (!homePage) return <ErrorState message="Home page data is unavailable." />;
 
   return (
-    <div>
-      <section className="hero-section shell" id="home">
-        <div className="hero-copy">
-          <div className="availability-pill">
-            <span className="availability-dot" />
+    <div className="home-redesign">
+      <section className="hero-redesign shell" id="home">
+        <div className="hero-redesign-copy">
+          <div className="hero-kicker">
+            <span className="hero-kicker-dot" />
             {homePage.hero.availabilityText}
           </div>
-          <p className="hero-greeting">{homePage.hero.greeting}</p>
-          <h1>
-            <span className="gradient-text">{homePage.hero.name}</span>
+          <p className="hero-redesign-intro">{homePage.hero.greeting}</p>
+          <div className="hero-typewriter" aria-label={homePage.hero.name}>
+            <span className="hero-typewriter-prefix">I am </span>
+            <span className="hero-typewriter-name">{typedName}</span>
+            <span className="hero-typewriter-caret" />
+          </div>
+          <h1 className="hero-redesign-title">
+            <span className="hero-redesign-line">I design products that</span>
+            <span className="gradient-text">move from ambiguity to action.</span>
           </h1>
-          <p className="hero-title">{homePage.hero.title}</p>
-          <p className="hero-bio">{homePage.hero.bio}</p>
+          <p className="hero-redesign-role">{homePage.hero.title}</p>
+          <p className="hero-redesign-bio">{homePage.hero.bio}</p>
           <div className="hero-actions">
             <Link className="button button-primary" to={homePage.hero.primaryCta.href}>
               {homePage.hero.primaryCta.label}
@@ -73,32 +115,45 @@ export default function HomePage() {
             </a>
           </div>
         </div>
-        <div className="hero-media">
-          <div className="portrait-stack">
-            <div className="portrait-badge portrait-badge-top">🎨</div>
-            <div className="portrait-frame">
+
+        <div className="hero-redesign-visual">
+          <div className="hero-orb hero-orb-one" />
+          <div className="hero-orb hero-orb-two" />
+          <div className="hero-profile-panel">
+            <div className="hero-profile-topline">
+            </div>
+            <div className="hero-profile-portrait">
               <img src={homePage.hero.photoUrl} alt={homePage.hero.name} />
             </div>
-            <div className="portrait-badge portrait-badge-bottom">✨</div>
-          </div>
-          <div className="video-frame video-placeholder">
-            <div className="video-placeholder-copy">
-              <span className="eyebrow">YouTube Video</span>
-              <strong>Video in progress, coming soon</strong>
+            <div className="hero-profile-body">
+              <div className="hero-video-outline" aria-label="YouTube video placeholder">
+                <div className="hero-video-outline-topbar">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+                <div className="hero-video-outline-body">
+                  <div className="hero-video-play">▶</div>
+                  <strong>Video in progress, coming soon</strong>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="section shell section-soft" id="skills">
+      <RevealSection className="section shell skill-band section-soft" id="skills">
         <div className="section-heading">
+          <span className="eyebrow">Capabilities</span>
           <h2>{homePage.skills.title}</h2>
+          <p>Cross-functional thinking, product clarity, and user-centered execution brought into one working rhythm.</p>
         </div>
-        <div className="skills-groups">
+        <div className="skills-editorial-grid">
           {[...homePage.skills.groups]
             .sort((left, right) => left.displayOrder - right.displayOrder)
-            .map((group) => (
-              <div key={group.title} className="skill-group">
+            .map((group, index) => (
+              <article key={group.title} className={`skills-editorial-card skills-editorial-card-${(index % 3) + 1}`}>
+                <div className="skills-editorial-index">0{index + 1}</div>
                 <h3>{group.title}</h3>
                 <div className="chip-row">
                   {group.items.map((item) => (
@@ -107,98 +162,103 @@ export default function HomePage() {
                     </span>
                   ))}
                 </div>
-              </div>
+              </article>
             ))}
         </div>
-      </section>
+      </RevealSection>
 
-      <section className="section shell" id="projects">
-        <div className="section-heading">
-          <span className="eyebrow">{homePage.featuredProjects.eyebrow}</span>
-          <h2>{homePage.featuredProjects.title}</h2>
-          <p>{homePage.featuredProjects.description}</p>
-        </div>
-        <div className="carousel-toolbar">
-          <span className="carousel-caption">
-            Showing {Math.min(visibleProjects.length, PROJECTS_PER_PAGE)} of {orderedProjects.length}
-            {" "}projects
-          </span>
-          <div className="carousel-actions">
-            <button
-              className="button button-secondary button-compact"
-              type="button"
-              onClick={() => setProjectPage((page) => Math.max(page - 1, 0))}
-              disabled={projectPage === 0}
-            >
-              Previous
-            </button>
-            <button
-              className="button button-secondary button-compact"
-              type="button"
-              onClick={() =>
-                setProjectPage((page) => Math.min(page + 1, projectPageCount - 1))
-              }
-              disabled={projectPage >= projectPageCount - 1}
-            >
-              Next
-            </button>
+      <RevealSection className="section shell featured-work-shell" id="projects">
+        <div className="featured-work-header">
+          <div className="section-heading">
+            <span className="eyebrow">{homePage.featuredProjects.eyebrow}</span>
+            <h2>{homePage.featuredProjects.title}</h2>
+            <p>{homePage.featuredProjects.description}</p>
+          </div>
+          <div className="carousel-toolbar">
+            <span className="carousel-caption">
+              Curated page {projectPage + 1} of {projectPageCount}
+            </span>
+            <div className="carousel-actions">
+              <button
+                className="button button-secondary button-compact"
+                type="button"
+                onClick={() => setProjectPage((page) => Math.max(page - 1, 0))}
+                disabled={projectPage === 0}
+              >
+                Previous
+              </button>
+              <button
+                className="button button-secondary button-compact"
+                type="button"
+                onClick={() => setProjectPage((page) => Math.min(page + 1, projectPageCount - 1))}
+                disabled={projectPage >= projectPageCount - 1}
+              >
+                Next
+              </button>
+            </div>
           </div>
         </div>
-        <div className="project-grid">
+        <div className="project-grid project-grid-redesign">
           {visibleProjects.map((project) => (
             <ProjectCard key={project.slug} project={project} />
           ))}
         </div>
-      </section>
+      </RevealSection>
 
-      <section className="section shell section-soft" id="process">
+      <RevealSection className="section shell process-redesign section-soft" id="process">
         <div className="section-heading">
           <span className="eyebrow">{homePage.process.eyebrow}</span>
           <h2>{homePage.process.title}</h2>
           <p>{homePage.process.description}</p>
         </div>
-        <div className="process-grid">
+        <div className="process-timeline">
           {homePage.process.steps.map((step) => (
-            <article key={step.stepNumber} className="process-card">
-              <div className="process-number">{step.stepNumber}</div>
-              <h3>{step.title}</h3>
-              <p>{step.description}</p>
+            <article key={step.stepNumber} className="process-timeline-card">
+              <div className="process-timeline-number">{step.stepNumber}</div>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </div>
             </article>
           ))}
         </div>
-      </section>
+      </RevealSection>
 
-      <section className="section shell" id="about">
+      <RevealSection className="section shell" id="about">
         <div className="section-heading">
           <span className="eyebrow">{homePage.highlights.eyebrow}</span>
           <h2>{homePage.highlights.title}</h2>
           <p>{homePage.highlights.description}</p>
         </div>
-        <div className="highlights-grid">
+        <div className="highlights-editorial-grid">
           {homePage.highlights.items.map((item) => (
-            <article key={item.title} className="highlight-card">
-              <div className="highlight-emoji">{item.emoji}</div>
+            <article key={item.title} className="highlight-card highlight-card-redesign">
+              <div className="highlight-emoji">
+                <IconGlyph icon={getHighlightIconKey(item.title)} />
+              </div>
               <h3>{item.title}</h3>
               <p>{item.description}</p>
             </article>
           ))}
         </div>
-      </section>
+      </RevealSection>
 
-      <section className="section shell contact-section" id="contact">
-        <div className="section-heading section-heading-center">
-          <h2>{homePage.contact.title}</h2>
-          <p>{homePage.contact.description}</p>
+      <section className="section shell contact-redesign" id="contact">
+        <div className="contact-redesign-card">
+          <div className="section-heading">
+            <span className="eyebrow">Let’s build</span>
+            <h2>{homePage.contact.title}</h2>
+            <p>{homePage.contact.description}</p>
+          </div>
+          <div className="contact-actions">
+            <a className="button button-primary" href={`mailto:${homePage.contact.ctaEmail}`}>
+              {homePage.contact.ctaLabel}
+            </a>
+            <a className="button button-secondary" href={`mailto:${homePage.contact.ctaEmail}`}>
+              {homePage.contact.ctaEmail}
+            </a>
+          </div>
         </div>
-        <div className="contact-actions">
-          <a className="button button-primary" href={`mailto:${homePage.contact.ctaEmail}`}>
-            {homePage.contact.ctaLabel}
-          </a>
-        </div>
-        <p className="contact-caption">
-          or email me directly at{" "}
-          <a href={`mailto:${homePage.contact.ctaEmail}`}>{homePage.contact.ctaEmail}</a>
-        </p>
       </section>
     </div>
   );
