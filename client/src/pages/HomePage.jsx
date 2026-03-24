@@ -84,10 +84,6 @@ export default function HomePage() {
     <div className="home-redesign">
       <section className="hero-redesign shell" id="home">
         <div className="hero-redesign-copy">
-          <div className="hero-kicker">
-            <span className="hero-kicker-dot" />
-            {homePage.hero.availabilityText}
-          </div>
           <p className="hero-redesign-intro">{homePage.hero.greeting}</p>
           <div className="hero-typewriter" aria-label={homePage.hero.name}>
             <span className="hero-typewriter-prefix">I am </span>

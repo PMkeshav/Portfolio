@@ -363,7 +363,7 @@ h2 {
 .hero-redesign-title {
   max-width: 12ch;
   margin: 0;
-  font-size: clamp(1.88rem, 3.6vw, 3.08rem);
+  font-size: clamp(1.88rem, 3.6vw, 3.0rem);
   line-height: 1.08;
 }
 
