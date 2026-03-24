@@ -42,7 +42,7 @@ export const seedHomePage = {
     name: "Keshav Kumar",
     title: "Problem Solver & Product Manager",
     bio: "I craft digital experiences that people love. With 5+ years of experience, I blend user research, creative thinking, and technical know-how to build products that make a real difference in people's lives.",
-    photoUrl: "/assets/images/myphoto.jpg",
+    photoUrl: "/assets/images/myphoto2.jpg",
     videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ?modestbranding=1&rel=0&controls=1",
     primaryCta: { label: "View My Work", href: "/work", variant: "primary" },
     secondaryCta: { label: "Get in Touch", href: "/#contact", variant: "secondary" },
