@@ -96,7 +96,7 @@ export default function HomePage() {
           </div>
           <h1 className="hero-redesign-title">
             <span className="hero-redesign-line">I design products that</span>
-            <span className="gradient-text">move from ambiguity to action.</span>
+            <span className="gradient-text"> move from ambiguity to action.</span>
           </h1>
           <p className="hero-redesign-role">{homePage.hero.title}</p>
           <p className="hero-redesign-bio">{homePage.hero.bio}</p>

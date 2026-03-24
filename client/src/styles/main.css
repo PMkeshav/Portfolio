@@ -458,7 +458,7 @@ h2 {
   position: relative;
   z-index: 1;
   gap: 18px;
-  width: min(100%, 215px);
+  width: min(100%, 320px);
   padding: 22px;
   border-radius: 32px;
   background:
@@ -484,8 +484,12 @@ h2 {
 
 .hero-profile-portrait {
   overflow: hidden;
-  border-radius: 26px;
-  min-height: 169px;
+  width: min(100%, 176px);
+  aspect-ratio: 1 / 1;
+  min-height: 0;
+  margin-inline: auto;
+  border-radius: 999px;
+  border: 5px solid rgba(255, 255, 255, 0.92);
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(26, 26, 46, 0.18));
 }
 
@@ -917,7 +921,7 @@ h2 {
 }
 
 .section-soft {
-  background: linear-gradient(180deg, rgba(245, 158, 11, 0.08), rgba(255, 255, 255, 0));
+  /*background: linear-gradient(180deg, rgba(245, 158, 11, 0.08), rgba(255, 255, 255, 0));*/
 }
 
 .section-heading {
@@ -1349,13 +1353,13 @@ h2 {
   }
 
   .hero-profile-panel {
-    width: min(100%, 224px);
+    width: min(100%, 300px);
     margin-inline: auto;
     padding: 18px;
   }
 
   .hero-profile-portrait {
-    min-height: 176px;
+    width: min(100%, 164px);
   }
 
   .portrait-frame {
@@ -1466,14 +1470,13 @@ h2 {
   }
 
   .hero-profile-panel {
-    width: min(100%, 172px);
+    width: min(100%, 260px);
     padding: 14px;
     border-radius: 24px;
   }
 
   .hero-profile-portrait {
-    min-height: 134px;
-    border-radius: 18px;
+    width: min(100%, 148px);
   }
 
   .hero-video-outline {
