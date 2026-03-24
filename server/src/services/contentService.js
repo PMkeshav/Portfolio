@@ -20,6 +20,24 @@ import {
 } from "./fallbackStore.js";
 import { badRequest } from "../utils/http.js";
 
+function normalizeHomePagePayload(homePage) {
+  if (!homePage) {
+    return homePage;
+  }
+
+  if (homePage?.hero?.photoUrl === "/assets/images/myphoto.jpg") {
+    return {
+      ...homePage,
+      hero: {
+        ...homePage.hero,
+        photoUrl: "/assets/images/myphoto2.jpg",
+      },
+    };
+  }
+
+  return homePage;
+}
+
 async function hasDatabaseAccess() {
   if (isDbConnected()) {
     return true;
@@ -96,10 +114,12 @@ export async function getAdminBootstrap() {
 
 export async function getHomePage() {
   if (!(await hasDatabaseAccess())) {
-    return getFallbackHomePage();
+    return normalizeHomePagePayload(getFallbackHomePage());
   }
 
-  return HomePage.findOne({ key: "home" }).lean();
+  return normalizeHomePagePayload(
+    await HomePage.findOne({ key: "home" }).lean(),
+  );
 }
 
 export async function updateHomePage(payload) {
