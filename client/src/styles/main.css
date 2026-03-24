@@ -1016,7 +1016,16 @@ h2 {
 }
 
 .project-card {
+  display: block;
   overflow: hidden;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.project-card-link:focus-visible {
+  outline: 3px solid rgba(245, 158, 11, 0.32);
+  outline-offset: 4px;
 }
 
 .project-card-visual {

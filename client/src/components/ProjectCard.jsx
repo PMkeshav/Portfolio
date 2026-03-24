@@ -3,7 +3,7 @@ import IconGlyph, { getProjectIconKey } from "./IconGlyph.jsx";
 
 export default function ProjectCard({ project }) {
   return (
-    <article className="project-card">
+    <Link to={`/work/${project.slug}`} className="project-card project-card-link">
       <div
         className="project-card-visual"
         style={{
@@ -30,10 +30,7 @@ export default function ProjectCard({ project }) {
             </span>
           ))}
         </div>
-        <Link to={`/work/${project.slug}`} className="text-link">
-          Read Case Study
-        </Link>
       </div>
-    </article>
+    </Link>
   );
 }
