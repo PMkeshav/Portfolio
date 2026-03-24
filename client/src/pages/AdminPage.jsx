@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { contentApi } from "../api/contentApi.js";
 import {
   arrayToNewlineList,
@@ -14,12 +14,17 @@ export default function AdminPage() {
   const [projects, setProjects] = useState([]);
   const [adminKey, setAdminKey] = useState("");
   const [keyInput, setKeyInput] = useState("");
-  const [skillsGroupsText, setSkillsGroupsText] = useState("");
+  const [productSkillsText, setProductSkillsText] = useState("");
+  const [technicalSkillsText, setTechnicalSkillsText] = useState("");
+  const [toolsText, setToolsText] = useState("");
+  const [processStepsText, setProcessStepsText] = useState("");
+  const [highlightsText, setHighlightsText] = useState("");
   const [selectedProjectId, setSelectedProjectId] = useState("new");
   const [projectForm, setProjectForm] = useState(createEmptyProject());
   const [status, setStatus] = useState("locked");
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
+  const noticeTimeoutRef = useRef(null);
 
   useEffect(() => {
     const savedKey = window.localStorage.getItem("portfolioAdminKey") || "";
@@ -51,17 +56,59 @@ export default function AdminPage() {
   }, [projects, selectedProject, selectedProjectId]);
 
   useEffect(() => {
+    return () => {
+      if (noticeTimeoutRef.current) {
+        window.clearTimeout(noticeTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     if (!homePage?.skills?.groups) {
-      setSkillsGroupsText("");
+      setProductSkillsText("");
+      setTechnicalSkillsText("");
+      setToolsText("");
+      setProcessStepsText("");
+      setHighlightsText("");
       return;
     }
 
-    setSkillsGroupsText(
-      homePage.skills.groups
-        .map((group) => `${group.title} | ${group.items.join(", ")} | ${group.displayOrder}`)
-        .join("\n"),
+    setProductSkillsText(
+      arrayToNewlineList(findSkillGroupItems(homePage.skills.groups, "Product Skills")),
+    );
+    setTechnicalSkillsText(
+      arrayToNewlineList(findSkillGroupItems(homePage.skills.groups, "Technical Skills")),
+    );
+    setToolsText(
+      arrayToNewlineList(findSkillGroupItems(homePage.skills.groups, "Tools")),
+    );
+    setProcessStepsText(
+      objectListToMultiline(homePage.process?.steps || [], [
+        "stepNumber",
+        "title",
+        "description",
+      ]),
+    );
+    setHighlightsText(
+      objectListToMultiline(homePage.highlights?.items || [], [
+        "emoji",
+        "title",
+        "description",
+      ]),
     );
   }, [homePage]);
+
+  function showSavedNotice() {
+    if (noticeTimeoutRef.current) {
+      window.clearTimeout(noticeTimeoutRef.current);
+    }
+
+    setNotice("Changes have been saved.");
+    noticeTimeoutRef.current = window.setTimeout(() => {
+      setNotice("");
+      noticeTimeoutRef.current = null;
+    }, 1000);
+  }
 
   async function refresh(accessKey = adminKey) {
     if (!accessKey) {
@@ -97,7 +144,7 @@ export default function AdminPage() {
       setError("");
       const updated = await contentApi.updateSiteSettings(siteSettings, adminKey);
       setSiteSettings(updated);
-      setNotice("Site settings saved.");
+      showSavedNotice();
     } catch (requestError) {
       setError(requestError.message);
     }
@@ -109,7 +156,7 @@ export default function AdminPage() {
       setError("");
       const updated = await contentApi.updateHomePage(homePage, adminKey);
       setHomePage(updated);
-      setNotice("Home page content saved.");
+      showSavedNotice();
     } catch (requestError) {
       setError(requestError.message);
     }
@@ -126,10 +173,10 @@ export default function AdminPage() {
           sanitizeProject(projectForm),
           adminKey,
         );
-        setNotice("Project updated.");
+        showSavedNotice();
       } else {
         await contentApi.createProject(sanitizeProject(projectForm), adminKey);
-        setNotice("Project created.");
+        showSavedNotice();
       }
 
       await refresh(adminKey);
@@ -145,7 +192,7 @@ export default function AdminPage() {
       setError("");
       await contentApi.deleteProject(projectForm._id, adminKey);
       setSelectedProjectId("new");
-      setNotice("Project deleted.");
+      showSavedNotice();
       await refresh(adminKey);
     } catch (requestError) {
       setError(requestError.message);
@@ -231,7 +278,7 @@ export default function AdminPage() {
         </div>
       </header>
 
-      {notice ? <div className="admin-notice">{notice}</div> : null}
+      {notice ? <div className="admin-notice admin-toast">{notice}</div> : null}
       {error ? <div className="admin-shell admin-error">{error}</div> : null}
 
       <div className="admin-grid">
@@ -295,31 +342,27 @@ export default function AdminPage() {
             <TextAreaField label="Hero Bio" value={homePage.hero.bio} onChange={(value) => updateSiteField(setHomePage, homePage, ["hero", "bio"], value)} />
             <Field label="Skills Title" value={homePage.skills.title} onChange={(value) => updateSiteField(setHomePage, homePage, ["skills", "title"], value)} />
             <TextAreaField
-              label="Skills Groups (title | item1,item2,item3 | order)"
-              value={skillsGroupsText}
+              label="Product Skills"
+              value={productSkillsText}
               onChange={(value) => {
-                setSkillsGroupsText(value);
-                setHomePage({
-                  ...homePage,
-                  skills: {
-                    ...homePage.skills,
-                    groups: value
-                      .split("\n")
-                      .map((line) => line.trim())
-                      .filter(Boolean)
-                      .map((line) => {
-                        const [title, items, order] = line.split("|").map((part) => part.trim());
-                        return {
-                          title: title || "",
-                          items: (items || "")
-                            .split(",")
-                            .map((item) => item.trim())
-                            .filter(Boolean),
-                          displayOrder: Number(order || 0),
-                        };
-                      }),
-                  },
-                });
+                setProductSkillsText(value);
+                setHomePage(updateSkillGroupItems(homePage, "Product Skills", 1, newlineListToArray(value)));
+              }}
+            />
+            <TextAreaField
+              label="Technical Skills"
+              value={technicalSkillsText}
+              onChange={(value) => {
+                setTechnicalSkillsText(value);
+                setHomePage(updateSkillGroupItems(homePage, "Technical Skills", 2, newlineListToArray(value)));
+              }}
+            />
+            <TextAreaField
+              label="Tools"
+              value={toolsText}
+              onChange={(value) => {
+                setToolsText(value);
+                setHomePage(updateSkillGroupItems(homePage, "Tools", 3, newlineListToArray(value)));
               }}
             />
             <Field label="Featured Eyebrow" value={homePage.featuredProjects.eyebrow} onChange={(value) => updateSiteField(setHomePage, homePage, ["featuredProjects", "eyebrow"], value)} />
@@ -330,16 +373,32 @@ export default function AdminPage() {
             <TextAreaField label="Process Description" value={homePage.process.description} onChange={(value) => updateSiteField(setHomePage, homePage, ["process", "description"], value)} />
             <TextAreaField
               label="Process Steps (number | title | description)"
-              value={objectListToMultiline(homePage.process.steps, ["stepNumber", "title", "description"])}
-              onChange={(value) => updateSiteField(setHomePage, homePage, ["process", "steps"], multilineToObjectList(value, ["stepNumber", "title", "description"]))}
+              value={processStepsText}
+              onChange={(value) => {
+                setProcessStepsText(value);
+                updateSiteField(
+                  setHomePage,
+                  homePage,
+                  ["process", "steps"],
+                  multilineToObjectList(value, ["stepNumber", "title", "description"]),
+                );
+              }}
             />
             <Field label="About Eyebrow" value={homePage.highlights.eyebrow} onChange={(value) => updateSiteField(setHomePage, homePage, ["highlights", "eyebrow"], value)} />
             <Field label="About Title" value={homePage.highlights.title} onChange={(value) => updateSiteField(setHomePage, homePage, ["highlights", "title"], value)} />
             <TextAreaField label="About Description" value={homePage.highlights.description} onChange={(value) => updateSiteField(setHomePage, homePage, ["highlights", "description"], value)} />
             <TextAreaField
               label="Highlights (emoji | title | description)"
-              value={objectListToMultiline(homePage.highlights.items, ["emoji", "title", "description"])}
-              onChange={(value) => updateSiteField(setHomePage, homePage, ["highlights", "items"], multilineToObjectList(value, ["emoji", "title", "description"]))}
+              value={highlightsText}
+              onChange={(value) => {
+                setHighlightsText(value);
+                updateSiteField(
+                  setHomePage,
+                  homePage,
+                  ["highlights", "items"],
+                  multilineToObjectList(value, ["emoji", "title", "description"]),
+                );
+              }}
             />
             <Field label="Contact Title" value={homePage.contact.title} onChange={(value) => updateSiteField(setHomePage, homePage, ["contact", "title"], value)} />
             <TextAreaField label="Contact Description" value={homePage.contact.description} onChange={(value) => updateSiteField(setHomePage, homePage, ["contact", "description"], value)} />
@@ -587,6 +646,34 @@ function updateProjectListItem(setter, state, listKey, index, field, value) {
       itemIndex === index ? { ...item, [field]: value } : item,
     ),
   });
+}
+
+function findSkillGroupItems(groups, title) {
+  return groups.find((group) => group.title === title)?.items || [];
+}
+
+function updateSkillGroupItems(homePage, title, displayOrder, items) {
+  const nextGroups = [...(homePage.skills?.groups || [])];
+  const existingIndex = nextGroups.findIndex((group) => group.title === title);
+  const nextGroup = {
+    title,
+    items,
+    displayOrder,
+  };
+
+  if (existingIndex >= 0) {
+    nextGroups[existingIndex] = nextGroup;
+  } else {
+    nextGroups.push(nextGroup);
+  }
+
+  return {
+    ...homePage,
+    skills: {
+      ...homePage.skills,
+      groups: nextGroups.sort((left, right) => left.displayOrder - right.displayOrder),
+    },
+  };
 }
 
 function Field({ label, value, onChange, type = "text" }) {

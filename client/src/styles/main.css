@@ -1187,6 +1187,20 @@ h2 {
   padding: 32px 0 56px;
 }
 
+.admin-toast {
+  position: fixed;
+  top: 92px;
+  right: 24px;
+  z-index: 30;
+  width: min(360px, calc(100% - 32px));
+  margin: 0;
+  padding: 14px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(34, 197, 94, 0.22);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.1);
+}
+
 .admin-header,
 .admin-project-header,
 .admin-actions {
@@ -1407,6 +1421,13 @@ h2 {
   .site-header-inner,
   .site-footer-inner {
     padding: 14px 0;
+  }
+
+  .admin-toast {
+    top: 76px;
+    right: 12px;
+    left: 12px;
+    width: auto;
   }
 
   .brand-mark {
