@@ -119,7 +119,7 @@ export default function HomePage() {
         <div className="hero-redesign-visual">
           <div className="hero-orb hero-orb-one" />
           <div className="hero-orb hero-orb-two" />
-          <div className="hero-profile-panel">
+         {/* <div className="hero-profile-panel"> */}
             <div className="hero-profile-topline">
             </div>
             <div className="hero-profile-portrait">
@@ -138,7 +138,7 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-          </div>
+         {/* comment here  </div> */}
         </div>
       </section>
 

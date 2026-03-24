@@ -484,7 +484,7 @@ h2 {
 
 .hero-profile-portrait {
   overflow: hidden;
-  width: min(100%, 176px);
+  width: min(100%, 220px);
   aspect-ratio: 1 / 1;
   min-height: 0;
   margin-inline: auto;
