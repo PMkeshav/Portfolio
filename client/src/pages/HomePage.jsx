@@ -9,6 +9,25 @@ import RevealSection from "../components/RevealSection.jsx";
 import { useLiveLoader } from "../hooks/useLiveLoader.js";
 
 const PROJECTS_PER_PAGE = 4;
+const DEFAULT_RESUME_URL =
+  "https://docs.google.com/document/d/1ow6TLTVT4iQceDQcjWoMrJd-k7xVK4x7/edit?usp=sharing&ouid=111921047130047387445&rtpof=true&sd=true";
+
+function getResumeDownloadUrl(url) {
+  if (!url) return DEFAULT_RESUME_URL;
+
+  try {
+    const parsedUrl = new URL(url, window.location.origin);
+    const match = parsedUrl.pathname.match(/\/document\/d\/([^/]+)/i);
+
+    if (parsedUrl.hostname.includes("docs.google.com") && match?.[1]) {
+      return `https://docs.google.com/document/d/${match[1]}/export?format=docx`;
+    }
+
+    return parsedUrl.toString();
+  } catch {
+    return url;
+  }
+}
 
 export default function HomePage() {
   const { siteSettings } = useOutletContext();
@@ -27,6 +46,9 @@ export default function HomePage() {
   );
   const homePage = data?.homePage;
   const projects = data?.projects || [];
+  const resumeDownloadUrl = getResumeDownloadUrl(
+    siteSettings?.resumeUrl || DEFAULT_RESUME_URL,
+  );
 
   const orderedProjects = useMemo(() => {
     const featuredProjects = projects.filter((project) => project.featured);
@@ -105,7 +127,7 @@ export default function HomePage() {
             </a>
             <a
               className="button button-secondary"
-              href={siteSettings?.resumeUrl || "/assets/docs/keshav-kumar-pm.docx"}
+              href={resumeDownloadUrl}
             >
               Download C.V.
             </a>

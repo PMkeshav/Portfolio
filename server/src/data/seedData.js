@@ -24,7 +24,8 @@ export const seedSiteSettings = {
     fontDisplay: "\"Playfair Display\", serif",
     fontBody: "\"DM Sans\", sans-serif",
   },
-  resumeUrl: "/assets/docs/keshav-kumar-pm.docx",
+  resumeUrl:
+    "https://docs.google.com/document/d/1ow6TLTVT4iQceDQcjWoMrJd-k7xVK4x7/edit?usp=sharing&ouid=111921047130047387445&rtpof=true&sd=true",
   contactEmail: "soykeshav@outlook.com",
   socialLinks: [
     { label: "LinkedIn", href: "https://www.linkedin.com/" },
