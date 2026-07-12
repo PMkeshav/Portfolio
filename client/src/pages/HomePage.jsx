@@ -198,7 +198,7 @@ export default function HomePage() {
             </span>
             <div className="carousel-actions">
               <button
-                className="button button-secondary button-compact"
+                className="button button-secondary button-compact carousel-page-button"
                 type="button"
                 onClick={() => setProjectPage((page) => Math.max(page - 1, 0))}
                 disabled={projectPage === 0}
@@ -206,7 +206,7 @@ export default function HomePage() {
                 Previous
               </button>
               <button
-                className="button button-secondary button-compact"
+                className="button button-secondary button-compact carousel-page-button"
                 type="button"
                 onClick={() => setProjectPage((page) => Math.min(page + 1, projectPageCount - 1))}
                 disabled={projectPage >= projectPageCount - 1}

@@ -614,22 +614,6 @@ h2 {
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
 }
 
-.project-grid-redesign .project-card-visual {
-  min-height: 220px;
-}
-
-.project-card-icon,
-.project-hero-icon {
-  width: 76px;
-  height: 76px;
-  padding: 18px;
-  border-radius: 24px;
-  color: white;
-  background: rgba(255, 255, 255, 0.14);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
 .project-grid-redesign .project-card-body {
   gap: 16px;
 }
@@ -1011,6 +995,16 @@ h2 {
   gap: 12px;
 }
 
+.carousel-page-button {
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
+}
+
+.carousel-page-button:disabled {
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: none;
+}
+
 .carousel-caption {
   color: var(--color-muted);
 }
@@ -1026,22 +1020,6 @@ h2 {
 .project-card-link:focus-visible {
   outline: 3px solid rgba(245, 158, 11, 0.32);
   outline-offset: 4px;
-}
-
-.project-card-visual {
-  min-height: 180px;
-  display: grid;
-  place-items: center;
-  font-size: 4rem;
-  color: white;
-  overflow: hidden;
-}
-
-.project-card-image,
-.project-hero-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 .project-card-body,
@@ -1126,16 +1104,6 @@ h2 {
 .back-link {
   display: inline-block;
   margin-bottom: 22px;
-}
-
-.project-hero {
-  min-height: 240px;
-  border-radius: 32px;
-  display: grid;
-  place-items: center;
-  color: white;
-  font-size: 5rem;
-  box-shadow: var(--shadow-soft);
 }
 
 .project-detail-header,
@@ -1501,18 +1469,6 @@ h2 {
   .impact-card {
     padding: 18px;
     border-radius: 22px;
-  }
-
-  .project-grid-redesign .project-card-visual {
-    min-height: 180px;
-  }
-
-  .project-card-icon,
-  .project-hero-icon {
-    width: 62px;
-    height: 62px;
-    padding: 14px;
-    border-radius: 18px;
   }
 
   .hero-profile-panel {

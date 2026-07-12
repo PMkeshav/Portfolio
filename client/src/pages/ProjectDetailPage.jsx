@@ -1,7 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { contentApi } from "../api/contentApi.js";
 import ErrorState from "../components/ErrorState.jsx";
-import IconGlyph, { getProjectIconKey } from "../components/IconGlyph.jsx";
 import LoadingState from "../components/LoadingState.jsx";
 import { useLiveLoader } from "../hooks/useLiveLoader.js";
 
@@ -20,18 +19,6 @@ export default function ProjectDetailPage() {
       <Link className="text-link back-link" to="/work">
         Back to all projects
       </Link>
-      <div
-        className="project-hero"
-        style={{
-          background: `linear-gradient(135deg, ${project.heroMedia.gradientFrom}, ${project.heroMedia.gradientTo})`,
-        }}
-      >
-        {project.heroMedia.imageUrl ? (
-          <img src={project.heroMedia.imageUrl} alt={project.title} className="project-hero-image" />
-        ) : (
-          <IconGlyph icon={getProjectIconKey(project)} className="project-hero-icon" />
-        )}
-      </div>
       <div className="project-detail-header">
         <div className="pill-row">
           {project.statusLabel ? <span className="pill pill-primary">{project.statusLabel}</span> : null}
