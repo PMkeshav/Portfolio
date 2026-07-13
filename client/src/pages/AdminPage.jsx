@@ -23,6 +23,7 @@ export default function AdminPage() {
   const [projectForm, setProjectForm] = useState(createEmptyProject());
   const [status, setStatus] = useState("locked");
   const [notice, setNotice] = useState("");
+  const [noticeType, setNoticeType] = useState("success");
   const [error, setError] = useState("");
   const noticeTimeoutRef = useRef(null);
 
@@ -98,12 +99,13 @@ export default function AdminPage() {
     );
   }, [homePage]);
 
-  function showSavedNotice() {
+  function showNotice(message, type = "success") {
     if (noticeTimeoutRef.current) {
       window.clearTimeout(noticeTimeoutRef.current);
     }
 
-    setNotice("Changes have been saved.");
+    setNotice(message);
+    setNoticeType(type);
     noticeTimeoutRef.current = window.setTimeout(() => {
       setNotice("");
       noticeTimeoutRef.current = null;
@@ -144,7 +146,7 @@ export default function AdminPage() {
       setError("");
       const updated = await contentApi.updateSiteSettings(siteSettings, adminKey);
       setSiteSettings(updated);
-      showSavedNotice();
+      showNotice("Changes have been saved.");
     } catch (requestError) {
       setError(requestError.message);
     }
@@ -156,13 +158,21 @@ export default function AdminPage() {
       setError("");
       const updated = await contentApi.updateHomePage(homePage, adminKey);
       setHomePage(updated);
-      showSavedNotice();
+      showNotice("Changes have been saved.");
     } catch (requestError) {
       setError(requestError.message);
     }
   }
 
   async function saveProject() {
+    const isNewProject = !projectForm._id;
+
+    if (isNewProject && getMissingProjectFields(projectForm).length) {
+      setError("");
+      showNotice("Please fill the mandatory items", "error");
+      return;
+    }
+
     try {
       setNotice("");
       setError("");
@@ -170,13 +180,13 @@ export default function AdminPage() {
       if (projectForm._id) {
         await contentApi.updateProject(
           projectForm._id,
-          sanitizeProject(projectForm),
+          sanitizeProject(projectForm, projects),
           adminKey,
         );
-        showSavedNotice();
+        showNotice("Project updated successfully");
       } else {
-        await contentApi.createProject(sanitizeProject(projectForm), adminKey);
-        showSavedNotice();
+        await contentApi.createProject(sanitizeProject(projectForm, projects), adminKey);
+        showNotice("Project added successfully");
       }
 
       await refresh(adminKey);
@@ -192,7 +202,7 @@ export default function AdminPage() {
       setError("");
       await contentApi.deleteProject(projectForm._id, adminKey);
       setSelectedProjectId("new");
-      showSavedNotice();
+      showNotice("Project deleted successfully");
       await refresh(adminKey);
     } catch (requestError) {
       setError(requestError.message);
@@ -278,7 +288,11 @@ export default function AdminPage() {
         </div>
       </header>
 
-      {notice ? <div className="admin-notice admin-toast">{notice}</div> : null}
+      {notice ? (
+        <div className={`admin-notice admin-toast admin-toast-${noticeType}`} role="status">
+          {notice}
+        </div>
+      ) : null}
       {error ? <div className="admin-shell admin-error">{error}</div> : null}
 
       <div className="admin-grid">
@@ -425,10 +439,13 @@ export default function AdminPage() {
         </div>
 
         <div className="field-grid">
-          <Field label="Slug" value={projectForm.slug} onChange={(value) => setProjectForm({ ...projectForm, slug: value })} />
-          <Field label="Title" value={projectForm.title} onChange={(value) => setProjectForm({ ...projectForm, title: value })} />
-          <Field label="Summary" value={projectForm.summary} onChange={(value) => setProjectForm({ ...projectForm, summary: value })} />
-          <TextAreaField label="Description" value={projectForm.description} onChange={(value) => setProjectForm({ ...projectForm, description: value })} />
+          <Field required label="Title" value={projectForm.title} onChange={(value) => setProjectForm({ ...projectForm, title: value })} />
+          <TextAreaField
+            required
+            label="Summary"
+            value={projectForm.description || projectForm.summary}
+            onChange={(value) => setProjectForm({ ...projectForm, summary: value, description: value })}
+          />
           <Field label="Category" value={projectForm.category} onChange={(value) => setProjectForm({ ...projectForm, category: value })} />
             <Field label="Status Label" value={projectForm.statusLabel} onChange={(value) => setProjectForm({ ...projectForm, statusLabel: value })} />
             <Field label="Display Order" type="number" value={projectForm.displayOrder} onChange={(value) => setProjectForm({ ...projectForm, displayOrder: Number(value || 0) })} />
@@ -436,8 +453,8 @@ export default function AdminPage() {
             <Field label="Gradient From" value={projectForm.heroMedia.gradientFrom} onChange={(value) => setProjectForm({ ...projectForm, heroMedia: { ...projectForm.heroMedia, gradientFrom: value } })} />
             <Field label="Gradient To" value={projectForm.heroMedia.gradientTo} onChange={(value) => setProjectForm({ ...projectForm, heroMedia: { ...projectForm.heroMedia, gradientTo: value } })} />
           <Field label="Image URL" value={projectForm.heroMedia.imageUrl} onChange={(value) => setProjectForm({ ...projectForm, heroMedia: { ...projectForm.heroMedia, imageUrl: value } })} />
-          <TextAreaField label="Problem" value={projectForm.problem} onChange={(value) => setProjectForm({ ...projectForm, problem: value })} />
-          <TextAreaField label="Solution" value={projectForm.solution} onChange={(value) => setProjectForm({ ...projectForm, solution: value })} />
+          <TextAreaField required label="Problem" value={projectForm.problem} onChange={(value) => setProjectForm({ ...projectForm, problem: value })} />
+          <TextAreaField required label="Solution" value={projectForm.solution} onChange={(value) => setProjectForm({ ...projectForm, solution: value })} />
           <TextAreaField label="Tags" value={arrayToNewlineList(projectForm.tags)} onChange={(value) => setProjectForm({ ...projectForm, tags: newlineListToArray(value) })} />
         </div>
 
@@ -676,20 +693,36 @@ function updateSkillGroupItems(homePage, title, displayOrder, items) {
   };
 }
 
-function Field({ label, value, onChange, type = "text" }) {
+function Field({ label, value, onChange, type = "text", required = false }) {
   return (
     <label className="field">
-      <span>{label}</span>
-      <input type={type} value={value ?? ""} onChange={(event) => onChange(event.target.value)} />
+      <span>
+        {label}
+        {required ? <em className="required-marker" aria-label="required"> *</em> : null}
+      </span>
+      <input
+        type={type}
+        value={value ?? ""}
+        required={required}
+        onChange={(event) => onChange(event.target.value)}
+      />
     </label>
   );
 }
 
-function TextAreaField({ label, value, onChange }) {
+function TextAreaField({ label, value, onChange, required = false }) {
   return (
     <label className="field field-full">
-      <span>{label}</span>
-      <textarea rows="4" value={value ?? ""} onChange={(event) => onChange(event.target.value)} />
+      <span>
+        {label}
+        {required ? <em className="required-marker" aria-label="required"> *</em> : null}
+      </span>
+      <textarea
+        rows="4"
+        value={value ?? ""}
+        required={required}
+        onChange={(event) => onChange(event.target.value)}
+      />
     </label>
   );
 }
@@ -710,12 +743,14 @@ function updateSiteField(setter, state, path, value) {
   setter(next);
 }
 
-function sanitizeProject(project) {
+function sanitizeProject(project, projects) {
+  const summary = project.summary?.trim() || project.description?.trim() || "";
+
   return {
-    slug: project.slug,
+    slug: project._id ? project.slug : createUniqueProjectSlug(project.title, projects),
     title: project.title,
-    summary: project.summary,
-    description: project.description,
+    summary,
+    description: summary,
     category: project.category,
     statusLabel: project.statusLabel,
     tags: project.tags,
@@ -735,4 +770,28 @@ function sanitizeProject(project) {
     isActive: project.isActive,
     displayOrder: project.displayOrder,
   };
+}
+
+function getMissingProjectFields(project) {
+  return [project.title, project.summary || project.description, project.problem, project.solution].filter(
+    (value) => !value?.trim(),
+  );
+}
+
+function createUniqueProjectSlug(title, projects) {
+  const baseSlug = title
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "project";
+  const usedSlugs = new Set(projects.map((project) => project.slug));
+  let slug = baseSlug;
+  let suffix = 2;
+
+  while (usedSlugs.has(slug)) {
+    slug = `${baseSlug}-${suffix}`;
+    suffix += 1;
+  }
+
+  return slug;
 }

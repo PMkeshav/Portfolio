@@ -1178,6 +1178,11 @@ h2 {
   box-shadow: 0 14px 34px rgba(15, 23, 42, 0.1);
 }
 
+.admin-toast-error {
+  border-color: rgba(220, 38, 38, 0.35);
+  color: #b91c1c;
+}
+
 .admin-header,
 .admin-project-header,
 .admin-actions {
@@ -1200,6 +1205,11 @@ h2 {
 
 .field span {
   font-weight: 700;
+}
+
+.required-marker {
+  color: #dc2626;
+  font-style: normal;
 }
 
 .field input,
