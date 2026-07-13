@@ -7,6 +7,7 @@ import {
   newlineListToArray,
   objectListToMultiline,
 } from "../utils/forms.js";
+import { downloadProjectsDocx } from "../utils/projectDocx.js";
 
 export default function AdminPage() {
   const [siteSettings, setSiteSettings] = useState(null);
@@ -206,6 +207,16 @@ export default function AdminPage() {
       await refresh(adminKey);
     } catch (requestError) {
       setError(requestError.message);
+    }
+  }
+
+  async function handleProjectDownload() {
+    try {
+      setError("");
+      await downloadProjectsDocx(projects);
+      showNotice("Project document downloaded successfully");
+    } catch (_error) {
+      setError("Unable to create the project document. Please try again.");
     }
   }
 
@@ -426,6 +437,9 @@ export default function AdminPage() {
       </div>
 
       <section className="admin-card">
+        <button className="button button-secondary button-compact" type="button" onClick={handleProjectDownload}>
+          Download Docx
+        </button>
         <div className="admin-project-header">
           <h2>Projects</h2>
           <select value={selectedProjectId} onChange={(event) => setSelectedProjectId(event.target.value)}>
