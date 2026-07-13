@@ -108,7 +108,7 @@ export default function HomePage() {
         <div className="hero-redesign-copy">
           <p className="hero-redesign-intro">{homePage.hero.greeting}</p>
           <div className="hero-typewriter" aria-label={homePage.hero.name}>
-            <span className="hero-typewriter-prefix">I am </span>
+            <span className="hero-typewriter-prefix">My Name is </span>
             <span className="hero-typewriter-name">{typedName}</span>
             <span className="hero-typewriter-caret" />
           </div>
