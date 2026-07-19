@@ -38,24 +38,6 @@ function normalizeHomePagePayload(homePage) {
   return homePage;
 }
 
-function normalizeSiteSettingsPayload(siteSettings) {
-  if (!siteSettings?.theme) return siteSettings;
-
-  // Existing sites may still have the old warm default saved in MongoDB.
-  // Return the new blue default without overriding a custom background choice.
-  if (siteSettings.theme.backgroundColor?.toLowerCase() !== "#fffdf8") {
-    return siteSettings;
-  }
-
-  return {
-    ...siteSettings,
-    theme: {
-      ...siteSettings.theme,
-      backgroundColor: "#eff6ff",
-    },
-  };
-}
-
 async function hasDatabaseAccess() {
   if (isDbConnected()) {
     return true;
@@ -93,12 +75,10 @@ async function ensureFeaturedLimit(payload, projectId = null) {
 
 export async function getSiteSettings() {
   if (!(await hasDatabaseAccess())) {
-    return normalizeSiteSettingsPayload(getFallbackSiteSettings());
+    return getFallbackSiteSettings();
   }
 
-  return normalizeSiteSettingsPayload(
-    await SiteSettings.findOne({ key: "default" }).lean(),
-  );
+  return SiteSettings.findOne({ key: "default" }).lean();
 }
 
 export async function updateSiteSettings(payload) {

@@ -15,7 +15,7 @@ export const seedSiteSettings = {
   theme: {
     primaryColor: "#f59e0b",
     secondaryColor: "#6b7280",
-    backgroundColor: "#eff6ff",
+    backgroundColor: "#fffdf8",
     surfaceColor: "#ffffff",
     textColor: "#1f2937",
     mutedTextColor: "#6b7280",
