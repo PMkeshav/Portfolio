@@ -507,7 +507,7 @@ export default function AdminPage() {
                   ...projectForm,
                   wireframes: [
                     ...projectForm.wireframes,
-                    { name: "", description: "", figmaUrl: "" },
+                    { name: "", description: "", figmaUrl: "", imageUrl: "" },
                   ],
                 })
               }
@@ -546,6 +546,19 @@ export default function AdminPage() {
                         "wireframes",
                         index,
                         "name",
+                        value,
+                      )
+                    }
+                  />
+                  <JpegImageField
+                    value={item.imageUrl}
+                    onChange={(value) =>
+                      updateProjectListItem(
+                        setProjectForm,
+                        projectForm,
+                        "wireframes",
+                        index,
+                        "imageUrl",
                         value,
                       )
                     }
@@ -741,6 +754,47 @@ function TextAreaField({ label, value, onChange, required = false }) {
   );
 }
 
+function JpegImageField({ value, onChange }) {
+  const [fileError, setFileError] = useState("");
+
+  function handleFileChange(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    if (!["image/jpeg", "image/jpg"].includes(file.type)) {
+      setFileError("Please select a JPEG image.");
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      setFileError("JPEG image must be 2 MB or smaller.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      onChange(reader.result);
+      setFileError("");
+    };
+    reader.readAsDataURL(file);
+  }
+
+  return (
+    <div className="field">
+      <span>JPEG Image (one per wireframe)</span>
+      <input type="file" accept="image/jpeg,.jpg,.jpeg" onChange={handleFileChange} />
+      {fileError ? <small className="field-error">{fileError}</small> : null}
+      {value ? (
+        <div className="wireframe-upload-preview">
+          <img src={value} alt="Selected wireframe preview" />
+          <button className="text-link" type="button" onClick={() => onChange("")}>Remove image</button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function updateSiteField(setter, state, path, value) {
   const next = structuredClone(state);
   let pointer = next;
@@ -775,6 +829,7 @@ function sanitizeProject(project, projects) {
       name: item.name?.trim() || "",
       description: item.description?.trim() || "",
       figmaUrl: item.figmaUrl?.trim() || "",
+      imageUrl: item.imageUrl || "",
     })),
     impactMetrics: project.impactMetrics.map((item) => ({
       metric: item.metric?.trim() || "",

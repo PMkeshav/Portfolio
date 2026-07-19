@@ -5,6 +5,7 @@ const wireframeSchema = new mongoose.Schema(
     name: { type: String, required: true },
     description: { type: String, required: true },
     figmaUrl: { type: String, default: "" },
+    imageUrl: { type: String, default: "" },
   },
   { _id: false },
 );

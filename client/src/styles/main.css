@@ -1022,6 +1022,27 @@ h2 {
   outline-offset: 4px;
 }
 
+.project-card-figma-links {
+  display: grid;
+  gap: 8px;
+}
+
+.project-card-figma-links > span {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.project-card-figma-link-list {
+  display: flex;
+  gap: 8px 14px;
+  flex-wrap: wrap;
+}
+
+.project-card-case-study-link {
+  width: fit-content;
+}
+
 .project-card-body,
 .process-card,
 .highlight-card,
@@ -1121,6 +1142,129 @@ h2 {
 .wireframe-grid,
 .impact-grid {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.wireframe-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.wireframe-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.wireframe-pagination {
+  margin: 0;
+}
+
+.wireframe-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: contain;
+  background: rgba(15, 23, 42, 0.04);
+  border-radius: 14px;
+  border: var(--border-soft);
+}
+
+.wireframe-image-button {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0 0 16px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.wireframe-image-button span {
+  position: absolute;
+  inset: auto 10px 10px auto;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.78);
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.wireframe-image-button:hover span,
+.wireframe-image-button:focus-visible span {
+  opacity: 1;
+}
+
+.wireframe-image-button:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.image-preview-backdrop {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.82);
+}
+
+.image-preview-dialog {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(1320px, 100%);
+  max-height: calc(100vh - 24px);
+  padding: 44px 18px 18px;
+  border-radius: 18px;
+  background: white;
+}
+
+.image-preview-dialog img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 72px);
+  object-fit: contain;
+}
+
+.image-preview-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.wireframe-upload-preview {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.wireframe-upload-preview img {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: var(--border-soft);
+}
+
+.field-error {
+  color: #b91c1c;
 }
 
 .wireframe-index {

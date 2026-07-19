@@ -9,6 +9,9 @@ const isValidUrl = (value) => {
   }
 };
 
+const isValidJpegImage = (value) =>
+  !value || (typeof value === "string" && /^data:image\/jpeg;base64,/i.test(value));
+
 const requireString = (errors, value, path, label) => {
   if (typeof value !== "string" || !value.trim()) {
     errors.push(`${label} is required at ${path}`);
@@ -161,6 +164,9 @@ export function validateProject(payload) {
     );
     if (!isValidUrl(item?.figmaUrl)) {
       errors.push(`Wireframe Figma URL is invalid at wireframes[${index}].figmaUrl`);
+    }
+    if (!isValidJpegImage(item?.imageUrl)) {
+      errors.push(`Wireframe image must be a JPEG at wireframes[${index}].imageUrl`);
     }
   });
 
