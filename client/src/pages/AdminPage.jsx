@@ -461,7 +461,6 @@ export default function AdminPage() {
             onChange={(value) => setProjectForm({ ...projectForm, summary: value, description: value })}
           />
           <Field label="Category" value={projectForm.category} onChange={(value) => setProjectForm({ ...projectForm, category: value })} />
-            <Field label="Status Label" value={projectForm.statusLabel} onChange={(value) => setProjectForm({ ...projectForm, statusLabel: value })} />
             <Field label="Display Order" type="number" value={projectForm.displayOrder} onChange={(value) => setProjectForm({ ...projectForm, displayOrder: Number(value || 0) })} />
             <Field label="Emoji" value={projectForm.heroMedia.emoji} onChange={(value) => setProjectForm({ ...projectForm, heroMedia: { ...projectForm.heroMedia, emoji: value } })} />
             <Field label="Gradient From" value={projectForm.heroMedia.gradientFrom} onChange={(value) => setProjectForm({ ...projectForm, heroMedia: { ...projectForm.heroMedia, gradientFrom: value } })} />
@@ -820,7 +819,7 @@ function sanitizeProject(project, projects) {
     summary,
     description: summary,
     category: project.category,
-    statusLabel: project.statusLabel,
+    statusLabel: "",
     tags: project.tags,
     heroMedia: project.heroMedia,
     problem: project.problem,

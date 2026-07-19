@@ -9,8 +9,7 @@ export default function ProjectCard({ project }) {
     <article className="project-card">
       <div className="project-card-body">
         <div className="pill-row">
-          {project.statusLabel ? <span className="pill pill-primary">{project.statusLabel}</span> : null}
-          {project.category ? <span className="pill">{project.category}</span> : null}
+          {project.category ? <span className="pill pill-category">{project.category}</span> : null}
         </div>
         <h3>{project.title}</h3>
         <p>{project.summary}</p>

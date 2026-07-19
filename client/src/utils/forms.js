@@ -28,7 +28,6 @@ export const createEmptyProject = (order = 99) => ({
   summary: "",
   description: "",
   category: "",
-  statusLabel: "Case Study",
   tags: [],
   heroMedia: {
     emoji: "✨",

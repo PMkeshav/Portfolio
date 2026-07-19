@@ -41,7 +41,6 @@ function projectChildren(docx, project, index) {
 
   const projectMeta = [
     ["Category", project.category],
-    ["Status", project.statusLabel],
     ["Display order", Number.isFinite(project.displayOrder) ? String(project.displayOrder) : ""],
     ["Slug", project.slug],
   ];

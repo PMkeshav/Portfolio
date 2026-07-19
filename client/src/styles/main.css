@@ -969,6 +969,11 @@ h2 {
   color: white;
 }
 
+.pill-category {
+  background: #f59e0b;
+  color: white;
+}
+
 .project-grid {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }

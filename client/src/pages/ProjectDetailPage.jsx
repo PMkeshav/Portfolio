@@ -52,8 +52,7 @@ export default function ProjectDetailPage() {
       </Link>
       <div className="project-detail-header">
         <div className="pill-row">
-          {project.statusLabel ? <span className="pill pill-primary">{project.statusLabel}</span> : null}
-          {project.category ? <span className="pill">{project.category}</span> : null}
+          {project.category ? <span className="pill pill-category">{project.category}</span> : null}
         </div>
         <h1>{project.title}</h1>
         <p>{project.description}</p>
