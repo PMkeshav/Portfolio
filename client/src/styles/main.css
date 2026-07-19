@@ -3,7 +3,7 @@
 :root {
   --color-primary: #f59e0b;
   --color-secondary: #6b7280;
-  --color-background: #ffffff;
+  --color-background: #eff6ff;
   --color-surface: #ffffff;
   --color-text: #1f2937;
   --color-muted: #6b7280;
@@ -21,7 +21,7 @@
 
 html {
   scroll-behavior: smooth;
-  background: #ffffff;
+  background: #eff6ff;
 }
 
 body {
@@ -1542,7 +1542,7 @@ h2 {
   .site-frame,
   .home-redesign,
   .work-redesign {
-    background: #ffffff;
+    background: #eff6ff;
   }
 
   .shell {
