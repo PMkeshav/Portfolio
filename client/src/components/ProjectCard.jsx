@@ -1,12 +1,32 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function ProjectCard({ project }) {
+  const navigate = useNavigate();
   const wireframesWithFigma = (project.wireframes || []).filter(
     (wireframe) => wireframe.figmaUrl,
   );
 
+  function openProject(event) {
+    if (event.target.closest("a")) return;
+    navigate(`/work/${project.slug}`);
+  }
+
+  function openProjectWithKeyboard(event) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      navigate(`/work/${project.slug}`);
+    }
+  }
+
   return (
-    <article className="project-card">
+    <article
+      className="project-card project-card-link"
+      role="link"
+      tabIndex={0}
+      onClick={openProject}
+      onKeyDown={openProjectWithKeyboard}
+      aria-label={`Open ${project.title} project details`}
+    >
       <div className="project-card-body">
         <div className="pill-row">
           {project.category ? <span className="pill pill-category">{project.category}</span> : null}
@@ -38,9 +58,6 @@ export default function ProjectCard({ project }) {
             </div>
           </div>
         ) : null}
-        <Link to={`/work/${project.slug}`} className="text-link project-card-case-study-link">
-          View case study →
-        </Link>
       </div>
     </article>
   );
