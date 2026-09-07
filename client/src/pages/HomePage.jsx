@@ -11,6 +11,7 @@ import { useLiveLoader } from "../hooks/useLiveLoader.js";
 const PROJECTS_PER_PAGE = 4;
 const DEFAULT_RESUME_URL =
   "https://docs.google.com/document/d/1ow6TLTVT4iQceDQcjWoMrJd-k7xVK4x7/edit?usp=sharing&ouid=111921047130047387445&rtpof=true&sd=true";
+const DEFAULT_HERO_PHOTO = "/assets/images/myphoto2.jpg";
 
 function getResumeDownloadUrl(url) {
   if (!url) return DEFAULT_RESUME_URL;
@@ -141,7 +142,14 @@ export default function HomePage() {
             <div className="hero-profile-topline">
             </div>
             <div className="hero-profile-portrait">
-              <img src={homePage.hero.photoUrl} alt={homePage.hero.name} />
+              <img
+                src={homePage.hero.photoUrl || DEFAULT_HERO_PHOTO}
+                alt={homePage.hero.name}
+                onError={(event) => {
+                  event.currentTarget.onerror = null;
+                  event.currentTarget.src = DEFAULT_HERO_PHOTO;
+                }}
+              />
             </div>
             <div className="hero-profile-body">
               <div className="hero-video-outline" aria-label="YouTube video placeholder">
@@ -159,31 +167,6 @@ export default function HomePage() {
          {/* comment here  </div> */}
         </div>
       </section>
-
-      <RevealSection className="section shell skill-band section-soft" id="skills">
-        <div className="section-heading">
-          <span className="eyebrow">Capabilities</span>
-          <h2>{homePage.skills.title}</h2>
-          <p>Cross-functional thinking, product clarity, and user-centered execution brought into one working rhythm.</p>
-        </div>
-        <div className="skills-editorial-grid">
-          {[...homePage.skills.groups]
-            .sort((left, right) => left.displayOrder - right.displayOrder)
-            .map((group, index) => (
-              <article key={group.title} className={`skills-editorial-card skills-editorial-card-${(index % 3) + 1}`}>
-                <div className="skills-editorial-index">0{index + 1}</div>
-                <h3>{group.title}</h3>
-                <div className="chip-row">
-                  {group.items.map((item) => (
-                    <span key={item} className="skill-chip">
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </article>
-            ))}
-        </div>
-      </RevealSection>
 
       <RevealSection className="section shell featured-work-shell" id="projects">
         <div className="featured-work-header">
@@ -220,6 +203,31 @@ export default function HomePage() {
           {visibleProjects.map((project) => (
             <ProjectCard key={project.slug} project={project} />
           ))}
+        </div>
+      </RevealSection>
+
+      <RevealSection className="section shell skill-band section-soft" id="skills">
+        <div className="section-heading">
+          <span className="eyebrow">Capabilities</span>
+          <h2>{homePage.skills.title}</h2>
+          <p>Cross-functional thinking, product clarity, and user-centered execution brought into one working rhythm.</p>
+        </div>
+        <div className="skills-editorial-grid">
+          {[...homePage.skills.groups]
+            .sort((left, right) => left.displayOrder - right.displayOrder)
+            .map((group, index) => (
+              <article key={group.title} className={`skills-editorial-card skills-editorial-card-${(index % 3) + 1}`}>
+                <div className="skills-editorial-index">0{index + 1}</div>
+                <h3>{group.title}</h3>
+                <div className="chip-row">
+                  {group.items.map((item) => (
+                    <span key={item} className="skill-chip">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </article>
+            ))}
         </div>
       </RevealSection>
 
