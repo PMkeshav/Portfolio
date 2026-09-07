@@ -1,11 +1,23 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { cpSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
+const healthKartDirectory = fileURLToPath(
+  new URL("../Healthkart_Project", import.meta.url),
+);
+
+function copyHealthKartDemo() {
+  return {
+    name: "copy-healthkart-demo",
+    closeBundle() {
+      cpSync(healthKartDirectory, "dist", { recursive: true });
+    },
+  };
+}
 
 export default defineConfig({
-  plugins: [react()],
-  // Publish the standalone HealthKart demo alongside the React app. This makes
-  // it available in every build at /dummyHealthkart.html.
-  publicDir: "../Healthkart_Project",
+  plugins: [react(), copyHealthKartDemo()],
   server: {
     host: "127.0.0.1",
     port: 5173,
