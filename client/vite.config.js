@@ -3,6 +3,9 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  // Publish the standalone HealthKart demo alongside the React app. This makes
+  // it available in every build at /dummyHealthkart.html.
+  publicDir: "../Healthkart_Project",
   server: {
     host: "127.0.0.1",
     port: 5173,

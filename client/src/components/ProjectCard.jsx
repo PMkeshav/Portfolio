@@ -8,12 +8,20 @@ export default function ProjectCard({ project }) {
 
   function openProject(event) {
     if (event.target.closest("a")) return;
+    if (project.slug === "healthkart-case-study") {
+      window.location.assign("/dummyHealthkart.html");
+      return;
+    }
     navigate(`/work/${project.slug}`);
   }
 
   function openProjectWithKeyboard(event) {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
+      if (project.slug === "healthkart-case-study") {
+        window.location.assign("/dummyHealthkart.html");
+        return;
+      }
       navigate(`/work/${project.slug}`);
     }
   }
